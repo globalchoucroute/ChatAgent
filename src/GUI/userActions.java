@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 
 public class userActions extends JPanel {
 
-    JButton startSession = new JButton("Begin chat session");
-    JLabel userName = new JLabel();
-    JButton changeUsername = new JButton("Change username");
+    public JButton startSession = new JButton("Begin chat session");
+    public JLabel userName = new JLabel();
+    public JButton changeUsername = new JButton("Change username");
 
     public userActions(JList L, String name, JFrame parent){
         super();
@@ -21,8 +21,15 @@ public class userActions extends JPanel {
                     chatWindow chatWindow = new chatWindow((String) L.getSelectedValue());
                 }
                 else {
-                    JOptionPane.showMessageDialog(parent, "Please chose a username in the list");
+                    JOptionPane.showMessageDialog(parent, "Please chose a user in the list");
                 }
+            }
+        });
+
+        changeUsername.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    changeUsernameWindow changeUsernameWindow = new changeUsernameWindow(userName);
             }
         });
         add(startSession, BorderLayout.NORTH);

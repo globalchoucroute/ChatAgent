@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="290204c1-e5c0-4905-868c-f4ad41474cda" name="Default Changelist" comment="" />
+    <list default="true" id="c7d466a5-6f87-4fa7-9ca3-6344b55fb193" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,12 +15,13 @@
       </list>
     </option>
   </component>
-  <component name="ProjectId" id="1TpaRPKd1ekxUkvVhRuNZ1QZETi" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1TqgS6aRyit3H2jvOi2gCuOvsuw" />
   <component name="PropertiesComponent">
-    <property name="Downloaded.Files.Path.Enabled" value="false" />
-    <property name="Repository.Attach.Annotations" value="false" />
-    <property name="Repository.Attach.JavaDocs" value="false" />
-    <property name="Repository.Attach.Sources" value="false" />
+    <property name="last_opened_file_path" value="C:/Program Files/Git/bin/git.exe" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -37,7 +38,7 @@
   <component name="RunManager">
     <configuration name="ChatAgent" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="GUI.ChatAgent" />
-      <module name="Projet" />
+      <module name="ChatAgent" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="GUI.*" />
@@ -59,12 +60,23 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="290204c1-e5c0-4905-868c-f4ad41474cda" name="Default Changelist" comment="" />
-      <created>1574159481958</created>
+      <changelist id="c7d466a5-6f87-4fa7-9ca3-6344b55fb193" name="Default Changelist" comment="" />
+      <created>1574193036161</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1574159481958</updated>
+      <updated>1574193036161</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

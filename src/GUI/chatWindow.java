@@ -6,7 +6,7 @@ import java.awt.Dimension;
 
 public class chatWindow extends JFrame {
 
-    textArea textArea = new textArea();
+    public textArea textArea = new textArea();
     public chatWindow (String title){
         super();
         this.setPreferredSize(new Dimension(400,600));
