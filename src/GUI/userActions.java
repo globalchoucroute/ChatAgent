@@ -1,8 +1,18 @@
 package GUI;
-import javax.swing.*;
-import java.awt.*;
+
+import Software.chatSession;
+import Software.mainWindowActions;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.DatagramSocket;
 
 public class userActions extends JPanel {
 
@@ -13,15 +23,22 @@ public class userActions extends JPanel {
     public userActions(JList L, String name, JFrame parent){
         super();
         userName.setText("Logged in as " + name);
+        mainWindowActions mainWindowActions = new mainWindowActions(name);
 
         startSession.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (L.getSelectedIndex() != -1){
-                    chatWindow chatWindow = new chatWindow((String) L.getSelectedValue());
+                    try {
+                        //When the user starts a session, a new Window appears
+                        //The second argument starts a new UDP session
+                        chatWindow chatWindow = new chatWindow((String) L.getSelectedValue(), mainWindowActions.beginSession(4564));
+                    } catch (Exception ex) {
+                        System.out.println("aled");
+                    }
                 }
                 else {
-                    JOptionPane.showMessageDialog(parent, "Please chose a user in the list");
+                    JOptionPane.showMessageDialog(parent, "Please choose a user in the list");
                 }
             }
         });

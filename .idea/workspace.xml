@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c7d466a5-6f87-4fa7-9ca3-6344b55fb193" name="Default Changelist" comment="" />
+    <list default="true" id="76a751c7-8851-40f0-b236-a00c74e795e5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Software/chatSession.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Software/connection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Software/mainWindowActions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/$PRODUCT_WORKSPACE_FILE$" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/ChatAgent$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/ChatAgent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ChatAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/ChatAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/chatWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/chatWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/userActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/userActions.java" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,10 +34,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1TqgS6aRyit3H2jvOi2gCuOvsuw" />
+  <component name="ProjectId" id="1UEediTTyW4mR0HAQ1jZ5M6UIaL" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="C:/Program Files/Git/bin/git.exe" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -37,11 +52,11 @@
   </component>
   <component name="RunManager">
     <configuration name="ChatAgent" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="GUI.ChatAgent" />
+      <option name="MAIN_CLASS_NAME" value="Software.ChatAgent" />
       <module name="ChatAgent" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="GUI.*" />
+          <option name="PATTERN" value="Software.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -60,11 +75,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c7d466a5-6f87-4fa7-9ca3-6344b55fb193" name="Default Changelist" comment="" />
-      <created>1574193036161</created>
+      <changelist id="76a751c7-8851-40f0-b236-a00c74e795e5" name="Default Changelist" comment="" />
+      <created>1574926271355</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1574193036161</updated>
+      <updated>1574926271355</updated>
     </task>
     <servers />
   </component>
@@ -73,9 +88,7 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>

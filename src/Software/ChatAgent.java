@@ -1,6 +1,9 @@
-package GUI;
+package Software;
+import GUI.*;
 
 import javax.swing.*;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 
 public class ChatAgent {
     final static String LOOKANDFEEL = "System";
@@ -52,7 +55,7 @@ public class ChatAgent {
         connectionWindow connectionWindow = new connectionWindow();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -60,3 +63,4 @@ public class ChatAgent {
         });
     }
 }
+
