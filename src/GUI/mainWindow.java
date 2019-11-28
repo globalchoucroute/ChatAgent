@@ -17,17 +17,18 @@ public class mainWindow extends JFrame {
         super("Chat Agent");
 
         this.contactList = new contactList();
-        this.textArea = new textArea();
         this.userActions = new userActions(contactList.contacts, userName, this);
 
-        add(contactList, BorderLayout.NORTH);
+        add(contactList, BorderLayout.WEST);
         add(userActions, BorderLayout.CENTER);
         setPreferredSize(new Dimension(600,400));
+        setMinimumSize(new Dimension(200,200));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         pack();
         setVisible(true);
     }
+
 
     //Methods
     //Getters

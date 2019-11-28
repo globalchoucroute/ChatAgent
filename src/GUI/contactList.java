@@ -19,6 +19,18 @@ public class contactList extends JPanel {
         listModel.addElement("Deuxieme utilisateur");
         listModel.addElement("Troisieme utilisateur");
         listModel.addElement("Quatrieme utilisateur");
+        listModel.addElement("Premier utilisateur");
+        listModel.addElement("Deuxieme utilisateur");
+        listModel.addElement("Troisieme utilisateur");
+        listModel.addElement("Quatrieme utilisateur");
+        listModel.addElement("Premier utilisateur");
+        listModel.addElement("Deuxieme utilisateur");
+        listModel.addElement("Troisieme utilisateur");
+        listModel.addElement("Quatrieme utilisateur");
+        listModel.addElement("Premier utilisateur");
+        listModel.addElement("Deuxieme utilisateur");
+        listModel.addElement("Troisieme utilisateur");
+        listModel.addElement("Quatrieme utilisateur");
 
         this.contacts = new JList<>(listModel);
         contacts.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);

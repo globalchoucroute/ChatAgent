@@ -5,6 +5,8 @@ import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class textArea extends JPanel {
@@ -14,7 +16,7 @@ public class textArea extends JPanel {
     JButton sendButton = new JButton("Send");
 
     //Constructor
-    public textArea(){
+    public textArea(chatWindow currentChat){
         super();
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         sendButton.setMnemonic(KeyEvent.VK_ENTER);
@@ -24,6 +26,13 @@ public class textArea extends JPanel {
         this.add(text);
         this.add(sendButton);
 
-
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (text.getText() != null){
+                    currentChat.changeDisplayedMessages(text.getText());
+                }
+            }
+        });
     }
 }
