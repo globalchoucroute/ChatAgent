@@ -61,6 +61,7 @@ public class ChatAgent {
                 createAndShowGUI();
             }
         });
+
     }
 }
 

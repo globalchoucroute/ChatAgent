@@ -1,7 +1,7 @@
 package Software;
 
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import javax.xml.crypto.Data;
+import java.net.*;
 
 public class mainWindowActions {
 
@@ -27,7 +27,15 @@ public class mainWindowActions {
 
 
 
-    String changeUsername(String usr){
-        return "";
+    public void changeUsername(String usr){
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            DatagramPacket outPacket = new DatagramPacket(usr.getBytes(), usr.length(), InetAddress.getByName("10.1.255.255"), 5000);
+            socket.setBroadcast(true);
+            socket.send(outPacket);
+        } catch(Exception e){
+            System.out.println("raté change username");
+        }
+
     }
 }

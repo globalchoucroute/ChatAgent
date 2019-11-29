@@ -14,11 +14,13 @@ public class chatWindow extends JFrame {
 
     //Attributes
     public JLabel messageDisplay;
+    public JScrollPane messageArea;
     public JPanel displayPanel = new JPanel();
     public JPanel textAreaPanel = new JPanel();
     JTextArea text = new JTextArea("Write a message...");
-    JButton sendButton = new JButton("Send");
+    public JButton sendButton = new JButton("Send");
     chatSession session;
+
     //Constructor
     public chatWindow (String title, chatSession s){
         super();
@@ -33,14 +35,16 @@ public class chatWindow extends JFrame {
         textAreaPanel.add(sendButton, BorderLayout.EAST);
         textAreaPanel.setPreferredSize(new Dimension(350,40));
 
+        this.messageArea = new JScrollPane(displayPanel);
+        messageArea.setSize(new Dimension(400, 300));
         this.setPreferredSize(new Dimension(600,500));
-        this.messageDisplay = new JLabel("This is the start of your conversation with " + title + ".\n");
+        this.messageDisplay = new JLabel("This is the start of your conversation with \n" + title + ".\n");
         this.setTitle(title);
 
         displayPanel.add(messageDisplay);
-        displayPanel.setPreferredSize(new Dimension(400, 300));
+        displayPanel.setSize(new Dimension(400, 300));
 
-        add(displayPanel, BorderLayout.NORTH);
+        add(messageArea, BorderLayout.NORTH);
         add(textAreaPanel, BorderLayout.SOUTH);
 
         sendButton.addActionListener(new ActionListener() {
@@ -52,7 +56,7 @@ public class chatWindow extends JFrame {
                         InetAddress localaddress = InetAddress.getLocalHost();
                         session.sendMessage(session.buildPDU(text.getText(), localaddress, 2345));
                     } catch (Exception ex) {
-                        System.out.println("raté");
+                        System.out.println("raté sendmessage");
                     }
                 }
             }

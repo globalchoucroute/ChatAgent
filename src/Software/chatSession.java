@@ -34,7 +34,7 @@ public class chatSession {
                         packet.setLength(buffer.length);
 
                     }
-                } catch (Exception e) { System.out.println("sa march pa");}
+                } catch (Exception e) { System.out.println("pb recv message chatsession");}
             }
         });
         t.start();

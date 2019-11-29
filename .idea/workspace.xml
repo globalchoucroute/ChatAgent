@@ -2,21 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="76a751c7-8851-40f0-b236-a00c74e795e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Software/chatSession.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Software/connection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Software/mainWindowActions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/$PRODUCT_WORKSPACE_FILE$" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/ChatAgent$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/ChatAgent.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ChatAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/ChatAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/changeUsernameWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/changeUsernameWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/chatWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/chatWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/userActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/userActions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Software/ChatAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/ChatAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Software/chatSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/chatSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Software/connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Software/mainWindowActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/mainWindowActions.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -88,7 +81,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
