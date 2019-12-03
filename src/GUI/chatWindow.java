@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.InetAddress;
 
@@ -42,11 +43,28 @@ public class chatWindow extends JFrame {
 
         add(displayPanel, BorderLayout.NORTH);
         add(textAreaPanel, BorderLayout.SOUTH);
-
+        text.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_ENTER) {
+                    if (text.getText() != null){
+                        text.setText("");
+                        //changeDisplayedMessages(text.getText());
+                        try {
+                            InetAddress localaddress = InetAddress.getLocalHost();
+                            session.sendMessage(session.buildPDU(text.getText(), localaddress, 2345));
+                        } catch (Exception ex) {
+                            System.out.println("raté");
+                        }
+                    }
+                }
+            }
+        });
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (text.getText() != null){
+                    text.setText("");
                     //changeDisplayedMessages(text.getText());
                     try {
                         InetAddress localaddress = InetAddress.getLocalHost();

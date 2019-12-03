@@ -2,8 +2,7 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class connectionWindow extends JFrame {
 
@@ -18,6 +17,19 @@ public class connectionWindow extends JFrame {
         connectButton.setPreferredSize(new Dimension(50,20));
         add(userNameField, BorderLayout.CENTER);
         add(connectButton, BorderLayout.SOUTH);
+
+
+        userNameField.addKeyListener(new KeyAdapter() {
+             public void keyPressed(KeyEvent e) {
+                 int key = e.getKeyCode();
+                 if (key == KeyEvent.VK_ENTER) {
+                     mainWindow mainWindow = new mainWindow(userNameField.getText());
+                     setVisible(false);
+                     dispose();
+                 }
+             }
+         });
+
         connectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
