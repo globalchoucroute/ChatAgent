@@ -3,12 +3,15 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import Software.connection;
 
 public class connectionWindow extends JFrame {
 
     //Attributes
     public JButton connectButton = new JButton("Connect");
     public JTextField userNameField = new JTextField("Type in your username");
+    public connection connection = new connection();
+    public String[][] userList;
 
     public connectionWindow (){
         super();
@@ -21,11 +24,17 @@ public class connectionWindow extends JFrame {
 
         userNameField.addKeyListener(new KeyAdapter() {
              public void keyPressed(KeyEvent e) {
+                 String username = userNameField.getText();
                  int key = e.getKeyCode();
                  if (key == KeyEvent.VK_ENTER) {
-                     mainWindow mainWindow = new mainWindow(userNameField.getText());
-                     setVisible(false);
-                     dispose();
+                     if (username != null){
+                         if(connection.checkUsername(username)) {
+                             userList = connection.sendHello(username);
+                             mainWindow mainWindow = new mainWindow(username, userList);
+                             setVisible(false);
+                             dispose();
+                         }
+                     }
                  }
              }
          });
@@ -33,13 +42,18 @@ public class connectionWindow extends JFrame {
         connectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (userNameField.getText() != null){
-                    mainWindow mainWindow = new mainWindow(userNameField.getText());
-                    setVisible(false);
-                    dispose();
+                String username = userNameField.getText();
+                if (username != null){
+                    if(connection.checkUsername(username)){
+                        connection.sendHello(username);
+                        mainWindow mainWindow = new mainWindow(username,connection.activeList);
+                        setVisible(false);
+                        dispose();
+                    }
                 }
             }
         });
+
         setPreferredSize(new Dimension(200,200));
         pack();
         setVisible(true);

@@ -13,10 +13,10 @@ public class mainWindow extends JFrame {
     textArea textArea;
     userActions userActions;
     //Constructor
-    public mainWindow(String userName){
+    public mainWindow(String userName, String[][] usersList){
         super("Chat Agent");
 
-        this.contactList = new contactList();
+        this.contactList = new contactList(usersList);
         this.userActions = new userActions(contactList.contacts, userName, this);
 
         add(contactList, BorderLayout.WEST);

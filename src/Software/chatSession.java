@@ -1,8 +1,9 @@
 package Software;
 
-import javax.swing.JButton;
-import javax.xml.crypto.Data;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 
 public class chatSession {
 
@@ -13,48 +14,34 @@ public class chatSession {
     //Constructor
     public chatSession(DatagramSocket ds){
         clientSock = ds;
-        Thread t = new Thread(new Runnable(){
-            public void run(){
-                try{
-                    DatagramSocket serverSocket = new DatagramSocket(2345);
+        Thread t = new Thread(() -> {
+            try{
+                DatagramSocket serverSocket = new DatagramSocket(2345);
 
-                    while(true){
-                        //Creating the buffer for incoming messages
-                        byte[] buffer = new byte[1024];
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                while(true){
+                    //Creating the buffer for incoming messages
+                    byte[] buffer = new byte[1024];
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                        //Recover the datagram sent by client
-                        serverSocket.receive(packet);
+                    //Recover the datagram sent by client
+                    serverSocket.receive(packet);
 
-                        //Printing received message
-                        String msg = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-                        System.out.println(msg);
+                    //Printing received message
+                    String msg = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
+                    System.out.println(msg);
 
-                        //Resetting datagram length
-                        packet.setLength(buffer.length);
+                    //Resetting datagram length
+                    packet.setLength(buffer.length);
 
-                    }
-                } catch (Exception e) { System.out.println("pb recv message chatsession");}
-            }
+                }
+            } catch (Exception e) { System.out.println("pb recv message chatsession");}
         });
         t.start();
-        /*try {
-            InetAddress localaddress = InetAddress.getLocalHost();
-            for (int i=0; i<3; i++){
-                sendMessage(buildPDU("message num "+i, localaddress, 2345));
-
-            }
-        } catch (Exception e) {
-            System.out.println("raté");
-        }*/
-
-
     }
 
     //Methods
     public DatagramPacket buildPDU(String msg, InetAddress address, int port){
-        DatagramPacket outPacket = new DatagramPacket(msg.getBytes(),msg.length(), address, port);
-        return outPacket;
+        return new DatagramPacket(msg.getBytes(),msg.length(), address, port);
     }
 
     public void sendMessage(DatagramPacket pdu){

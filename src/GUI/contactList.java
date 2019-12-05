@@ -9,12 +9,12 @@ public class contactList extends JPanel {
     DefaultListModel<String> listModel;
     JList<String> contacts;
     JScrollPane container;
-    JPanel panel;
 
     //Constructor
-    public contactList() {
+    public contactList(String[][] list) {
         super();
         this.listModel = new DefaultListModel<>();
+        listModel = initContactList(list);
         listModel.addElement("Premier utilisateur");
         listModel.addElement("Deuxieme utilisateur");
         listModel.addElement("Troisieme utilisateur");
@@ -56,6 +56,13 @@ public class contactList extends JPanel {
     }
 
     //Setters
+    public DefaultListModel initContactList(String[][] list){
+        for (int i = 0; i < list[0].length; i++){
+            listModel.addElement(list[0][i]);
+        }
+        return listModel;
+    }
+
     public void addContact(String contact){
         this.listModel.addElement(contact);
     }
