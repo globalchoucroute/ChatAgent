@@ -4,15 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import Software.connection;
+import Software.userList;
 
 public class connectionWindow extends JFrame {
 
     //Attributes
     public JButton connectButton = new JButton("Connect");
     public JTextField userNameField = new JTextField("Type in your username");
-    public connection connection = new connection();
-    public String[][] userList;
 
+    //Constructor
     public connectionWindow (){
         super();
         userNameField.setSize(new Dimension(100, 50));
@@ -20,7 +20,7 @@ public class connectionWindow extends JFrame {
         connectButton.setPreferredSize(new Dimension(50,20));
         add(userNameField, BorderLayout.CENTER);
         add(connectButton, BorderLayout.SOUTH);
-
+        connection connection = new connection();
 
         userNameField.addKeyListener(new KeyAdapter() {
              public void keyPressed(KeyEvent e) {
@@ -29,7 +29,7 @@ public class connectionWindow extends JFrame {
                  if (key == KeyEvent.VK_ENTER) {
                      if (username != null){
                          if(connection.checkUsername(username)) {
-                             userList = connection.sendHello(username);
+                             userList userList = connection.sendHello(username);
                              mainWindow mainWindow = new mainWindow(username, userList);
                              setVisible(false);
                              dispose();
@@ -45,8 +45,8 @@ public class connectionWindow extends JFrame {
                 String username = userNameField.getText();
                 if (username != null){
                     if(connection.checkUsername(username)){
-                        connection.sendHello(username);
-                        mainWindow mainWindow = new mainWindow(username,connection.activeList);
+                        userList userList = connection.sendHello(username);
+                        mainWindow mainWindow = new mainWindow(username, userList);
                         setVisible(false);
                         dispose();
                     }

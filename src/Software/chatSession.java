@@ -28,7 +28,7 @@ public class chatSession {
 
                     //Printing received message
                     String msg = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
-                    System.out.println(msg);
+                    //System.out.println(msg);
 
                     //Resetting datagram length
                     packet.setLength(buffer.length);

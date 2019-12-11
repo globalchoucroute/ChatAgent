@@ -1,6 +1,7 @@
 package GUI;
 
 import Software.mainWindowActions;
+import Software.userList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,13 +17,15 @@ public class userActions extends JPanel {
 
     public JButton startSession = new JButton("Begin chat session");
     public JLabel userName = new JLabel();
+    public String username;
     public JButton changeUsername = new JButton("Change username");
     public static int port = 5000;
 
-    public userActions(JList L, String name, JFrame parent){
+    public userActions(JList L, String name, mainWindow parent, userList userList){
         super();
+        username = name;
         userName.setText("Logged in as " + name);
-        mainWindowActions mainWindowActions = new mainWindowActions(name);
+        mainWindowActions mainWindowActions = new mainWindowActions(name, userList);
 
         //Starts a session with the selected user when the button is clicked
         startSession.addActionListener(e -> {
@@ -30,7 +33,7 @@ public class userActions extends JPanel {
                 try {
                     //When the user starts a session, a new Window appears
                     //The second argument starts a new UDP session
-                    new chatWindow((String) L.getSelectedValue(), mainWindowActions.beginSession(port));
+                    new chatWindow(username, (String) L.getSelectedValue(), mainWindowActions.beginSession(port));
                     port++;
                 } catch (Exception ex) {
                     System.out.println("aled");
@@ -42,11 +45,16 @@ public class userActions extends JPanel {
         });
 
         //Open the change username window when the button is clicked
-        changeUsername.addActionListener(e -> new changeUsernameWindow(userName));
+        changeUsername.addActionListener(e -> new changeUsernameWindow(parent));
 
         add(startSession, BorderLayout.NORTH);
         add(userName, BorderLayout.CENTER);
         add(changeUsername, BorderLayout.SOUTH);
 
+    }
+
+    public void changeUsername(String name){
+        username = name;
+        userName.setText("Logged in as " + name);
     }
 }

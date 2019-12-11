@@ -10,18 +10,16 @@ import java.util.Timer;
 public class connection {
 
     //Attributes
-    public String[][] activeList = new String[2][];
-    public static int i = 0;
+    public userList userList = new userList();
 
     //Control class for the checkUsername shared boolean
-    class Control {
+    static class Control {
         public volatile boolean unique = true;
     }
     final Control control = new Control();
 
 
     public connection (){
-
     }
 
     //Methods
@@ -75,7 +73,7 @@ public class connection {
         return control.unique;
     }
 
-    public String[][] sendHello(String usr){
+    public userList sendHello(String usr){
         InetAddress ip;
         Timer timer;
 
@@ -118,9 +116,7 @@ public class connection {
 
                             //Parse the received string in order to update the activeList properly
                             String[] data = msg.split("|");
-                            activeList[0][i] = data[0];
-                            activeList[1][i] = data[1];
-                            i++;
+                            userList.addElement(new userData(data[0], data[1]));
 
                             //Resetting datagram length
                             packet.setLength(buffer.length);
@@ -144,6 +140,6 @@ public class connection {
         }
 
         //returns a list of active users, linked with their mac address
-        return activeList;
+        return userList;
     }
 }

@@ -3,6 +3,8 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 
+import Software.userData;
+import Software.userList;
 public class contactList extends JPanel {
 
     //Attributes
@@ -11,10 +13,10 @@ public class contactList extends JPanel {
     JScrollPane container;
 
     //Constructor
-    public contactList(String[][] list) {
+    public contactList(userList userList) {
         super();
         this.listModel = new DefaultListModel<>();
-        listModel = initContactList(list);
+        listModel = initContactList(userList);
         listModel.addElement("Premier utilisateur");
         listModel.addElement("Deuxieme utilisateur");
         listModel.addElement("Troisieme utilisateur");
@@ -56,14 +58,17 @@ public class contactList extends JPanel {
     }
 
     //Setters
-    public DefaultListModel initContactList(String[][] list){
-        for (int i = 0; i < list[0].length; i++){
-            listModel.addElement(list[0][i]);
+    public DefaultListModel initContactList(userList userList){
+        for (int i = 0; i < userList.getLength(); i++){
+            listModel.addElement(userList.getUser(i).getUsername());
         }
         return listModel;
     }
 
-    public void addContact(String contact){
-        this.listModel.addElement(contact);
+    public DefaultListModel updateList(userList userList){
+        for (int i = 0; i < userList.getLength(); i++){
+            listModel.addElement(userList.getUser(i).getUsername());
+        }
+        return listModel;
     }
 }

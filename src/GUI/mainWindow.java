@@ -1,5 +1,7 @@
 package GUI;
 
+import Software.userList;
+
 import javax.swing.JFrame;
 import javax.swing.border.Border;
 import java.awt.BorderLayout;
@@ -12,12 +14,13 @@ public class mainWindow extends JFrame {
     contactList contactList;
     textArea textArea;
     userActions userActions;
+    public String username;
     //Constructor
-    public mainWindow(String userName, String[][] usersList){
+    public mainWindow(String userName, userList usersList){
         super("Chat Agent");
-
+        username = userName;
         this.contactList = new contactList(usersList);
-        this.userActions = new userActions(contactList.contacts, userName, this);
+        this.userActions = new userActions(contactList.contacts, username, this, usersList);
 
         add(contactList, BorderLayout.WEST);
         add(userActions, BorderLayout.CENTER);
@@ -34,4 +37,8 @@ public class mainWindow extends JFrame {
     //Getters
 
     //Setters
+    public void setUsername(String name){
+        username = name;
+        userActions.changeUsername(name);
+    }
 }

@@ -14,18 +14,18 @@ import java.net.InetAddress;
 public class chatWindow extends JFrame {
 
     //Attributes
-    public JLabel messageDisplay;
+    public String username;
+    public JTextArea messageDisplay;
     public JScrollPane messageArea;
-    public JPanel displayPanel = new JPanel();
     public JPanel textAreaPanel = new JPanel();
-    JTextArea text = new JTextArea("Write a message...");
+    JTextField text = new JTextField("Write a message...");
     public JButton sendButton = new JButton("Send");
     chatSession session;
 
     //Constructor
-    public chatWindow (String title, chatSession s){
+    public chatWindow (String username, String title, chatSession s){
         super();
-
+        this.username = username;
         this.session = s;
 
         sendButton.setMnemonic(KeyEvent.VK_ENTER);
@@ -36,14 +36,14 @@ public class chatWindow extends JFrame {
         textAreaPanel.add(sendButton, BorderLayout.EAST);
         textAreaPanel.setPreferredSize(new Dimension(350,40));
 
-        this.messageArea = new JScrollPane(displayPanel);
-        messageArea.setSize(new Dimension(400, 300));
-        this.setPreferredSize(new Dimension(600,500));
-        this.messageDisplay = new JLabel("This is the start of your conversation with \n" + title + ".\n");
-        this.setTitle(title);
+        messageDisplay = new JTextArea("This is the start of your conversation with " + title + ".\n");
+        messageDisplay.setEditable(false);
+        messageArea = new JScrollPane(messageDisplay);
+        messageArea.setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(600,500));
 
-        displayPanel.add(messageDisplay);
-        displayPanel.setSize(new Dimension(400, 300));
+
+        this.setTitle(title);
 
         add(messageArea, BorderLayout.NORTH);
         add(textAreaPanel, BorderLayout.SOUTH);
@@ -52,8 +52,9 @@ public class chatWindow extends JFrame {
                 int key = e.getKeyCode();
                 if (key == KeyEvent.VK_ENTER) {
                     if (text.getText() != null){
+                        messageDisplay.append("\n" + username + " : " + text.getText());
                         text.setText("");
-                        //changeDisplayedMessages(text.getText());
+
                         try {
                             InetAddress localaddress = InetAddress.getLocalHost();
                             session.sendMessage(session.buildPDU(text.getText(), localaddress, 2345));
@@ -68,8 +69,8 @@ public class chatWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (text.getText() != null){
+                    messageDisplay.append("\n" + username + " : " + text.getText());
                     text.setText("");
-                    //changeDisplayedMessages(text.getText());
                     try {
                         InetAddress localaddress = InetAddress.getLocalHost();
                         session.sendMessage(session.buildPDU(text.getText(), localaddress, 2345));
@@ -88,6 +89,6 @@ public class chatWindow extends JFrame {
     //Methods
     public void changeDisplayedMessages(String msg){
         String current = this.messageDisplay.getText();
-        this.messageDisplay.setText("\n" + current + "\n" + msg);
+        this.messageDisplay.setText(current + "\n" + this.username + " : " + msg);
     }
 }

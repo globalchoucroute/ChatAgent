@@ -7,15 +7,22 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Date;
 
 public class mainWindowActions {
 
     //Attributes
     protected String username;
-    protected String[][] activeList = new String[2][];
+    public userList contactList;
+
+    //Control class for the checkUsername shared boolean
+    class Control {
+        public volatile boolean unique = true;
+    }
+    final connection.Control control = new connection.Control();
 
     //Constructor
-    public mainWindowActions(String username) {
+    public mainWindowActions(String username, userList userList) {
         Thread messageReception = new Thread(() -> {
             try {
                 DatagramSocket serverSocket = new DatagramSocket(3000);
@@ -28,7 +35,7 @@ public class mainWindowActions {
                     //Recover the datagram sent by client
                     serverSocket.receive(packet);
 
-                    messageTreatment m = new messageTreatment(username, activeList, packet);
+                    messageTreatment m = new messageTreatment(username, userList, packet);
                     m.start();
                 }
             } catch (Exception e){
@@ -50,16 +57,67 @@ public class mainWindowActions {
     }
 
     public void changeUsername(String usr){
-        //TODO : Check if the new username is valid
+        if (checkUsername(usr)){
+            try {
+                DatagramSocket socket = new DatagramSocket();
+                //TODO : Send the message to a proper address
+                DatagramPacket outPacket = new DatagramPacket(usr.getBytes(), usr.length(), InetAddress.getByName("10.1.255.255"), 5000);
+                socket.setBroadcast(true);
+                socket.send(outPacket);
+            } catch(Exception e){
+                System.out.println("raté change username");
+            }
+        }
+    }
+
+    public boolean checkUsername(String usr){
         try {
+            //Message format for the username check : "jean-michel|check"
+            String message = usr + "|check";
+
+            //Creating the server socket for potential reception
             DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(usr.getBytes(), usr.length(), InetAddress.getByName("10.1.255.255"), 5000);
+            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 2003);
             socket.setBroadcast(true);
             socket.send(outPacket);
-        } catch(Exception e){
-            System.out.println("raté change username");
+
+            //Start value for the timer
+            long startTime = System.currentTimeMillis();
+            long elapsedTime = 0L;
+
+            //Reception thread. It will last for 0.5 seconds.
+            Thread userNameReceptionThread = new Thread(() -> {
+                try{
+                    DatagramSocket serverSocket = new DatagramSocket(2004);
+                    while(true){
+
+                        //Creating the buffer for incoming messages
+                        byte[] buffer = new byte[1024];
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+                        //Recover the datagram sent by client
+                        serverSocket.receive(packet);
+                        control.unique = false;
+
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error while receiving the users info.");
+                }
+            });
+
+
+            //Run the thread for the duration of the timer
+            userNameReceptionThread.start();
+            while (elapsedTime < 500) elapsedTime = (new Date()).getTime() - startTime;
+            userNameReceptionThread.interrupt();
+
+
+        } catch( Exception e){
+            System.out.println("getLocalhost failed");
         }
 
+        //returns true if no message has been received
+        return control.unique;
     }
 
 }
@@ -68,13 +126,13 @@ class messageTreatment extends Thread {
 
     public String me;
     public String theirs;
-    public String[][] list;
     public String message;
+    public userList contactList;
     public InetAddress address;
     public int port;
-    messageTreatment(String a, String[][] c, DatagramPacket packet){
+    messageTreatment(String a, userList u, DatagramPacket packet){
+        contactList = u;
         me = a;
-        list = c;
         try{
             message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
             port = packet.getPort();
@@ -122,7 +180,7 @@ class messageTreatment extends Thread {
                     socket.send(outPacket);
 
                     //Update the activeList table
-                    //TODO : ACTIVE LIST CLASS
+                    contactList.addElement(new userData(data[0], data[1]));
                 } catch (Exception e) {
                     System.out.println("Could not send the message");
                 }
