@@ -2,11 +2,13 @@ package Software;
 
 public class userData {
     public String username;
-    public String address;
+    public String macAddress;
+    public String IPAddress;
 
-    public userData(String u, String a){
+    public userData(String u, String a, String i){
         username = u;
-        address = a;
+        macAddress = a;
+        IPAddress = i;
     }
 
     public void setUsername(String u){
@@ -16,11 +18,13 @@ public class userData {
         return username;
     }
 
-    public void setAddress(String a){
-        address=a;
+    public void setMacAddress(String a){
+        macAddress=a;
     }
-    public String getAddress() {
-        return address;
+    public String getMacAddress() {
+        return macAddress;
     }
 
+    public void setIPAddress(String i) {IPAddress=i;}
+    public String getIPAddress() {return IPAddress;}
 }

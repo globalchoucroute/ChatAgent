@@ -1,8 +1,9 @@
 package Software;
+import java.io.Serializable;
 import java.util.Date;
 import java.sql.Timestamp;
 
-public class message {
+public class message implements Serializable {
     //Attributes
     public String content;
     public Timestamp timestamp;

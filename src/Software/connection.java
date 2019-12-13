@@ -30,7 +30,7 @@ public class connection {
 
             //Creating the server socket for potential reception
             DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 2003);
+            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 3000);
             socket.setBroadcast(true);
             socket.send(outPacket);
 
@@ -83,12 +83,12 @@ public class connection {
             NetworkInterface network = NetworkInterface.getByInetAddress(ip);
             byte[] mac = network.getHardwareAddress();
 
-            //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7"
-            String message = usr + "|" + Arrays.toString(mac);
+            //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
+            String message = usr + "|" + Arrays.toString(mac) + "|" + ip.toString();
 
             //Sending the sendHello package with username and mac address in broadcast mode
             DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 2001);
+            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 3000);
             socket.setBroadcast(true);
             socket.send(outPacket);
 
@@ -116,7 +116,7 @@ public class connection {
 
                             //Parse the received string in order to update the activeList properly
                             String[] data = msg.split("|");
-                            userList.addElement(new userData(data[0], data[1]));
+                            userList.addElement(new userData(data[0], data[1], data[2]));
 
                             //Resetting datagram length
                             packet.setLength(buffer.length);
@@ -139,6 +139,10 @@ public class connection {
             System.out.println("getLocalhost failed");
         }
 
+        userList.addElement(new userData("Premier utilisateur", "mac1", "127.0.0.1"));
+        userList.addElement(new userData("Deuxieme utilisateur", "mac2", "127.0.0.1"));
+        userList.addElement(new userData("Troisieme utilisateur", "mac3", "127.0.0.1"));
+        userList.addElement(new userData("Quatrieme utilisateur", "mac4", "127.0.0.1"));
         //returns a list of active users, linked with their mac address
         return userList;
     }

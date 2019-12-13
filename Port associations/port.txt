@@ -11,10 +11,12 @@ waitingSocket = 3000
 
 ****************************************************************
 
-sendHello = 	username|macAddr (=update activeList)
-recvHello = 	username|macAddr
+sendHello = 	username|macAddr|IPAddr (=update activeList)
+recvHello = 	username|macAddr|IPAddr
 
 checkUsername = username|"check"
+
+changeUsername = username|"change"
 
 beginSession =  username|"begin"
 

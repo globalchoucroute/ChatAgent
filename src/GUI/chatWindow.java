@@ -56,10 +56,10 @@ public class chatWindow extends JFrame {
                         text.setText("");
 
                         try {
-                            InetAddress localaddress = InetAddress.getLocalHost();
-                            session.sendMessage(session.buildPDU(text.getText(), localaddress, 2345));
+                            // TODO : IL FAUT UNIFIER LES PORTS OSKOUR
+                            session.sendMessage(session.buildPDU(text.getText(), 2345));
                         } catch (Exception ex) {
-                            System.out.println("raté");
+                            System.out.println("Failed to send the message");
                         }
                     }
                 }
@@ -72,10 +72,10 @@ public class chatWindow extends JFrame {
                     messageDisplay.append("\n" + username + " : " + text.getText());
                     text.setText("");
                     try {
-                        InetAddress localaddress = InetAddress.getLocalHost();
-                        session.sendMessage(session.buildPDU(text.getText(), localaddress, 2345));
+                        // TODO : IL FAUT UNIFIER LES PORTS OSKOUR
+                        session.sendMessage(session.buildPDU(text.getText(),2345));
                     } catch (Exception ex) {
-                        System.out.println("raté sendmessage");
+                        System.out.println("Failed to send the message");
                     }
                 }
             }

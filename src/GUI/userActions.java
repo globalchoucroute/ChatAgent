@@ -1,6 +1,7 @@
 package GUI;
 
 import Software.mainWindowActions;
+import Software.userData;
 import Software.userList;
 
 import javax.swing.JButton;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.DatagramSocket;
 
 public class userActions extends JPanel {
 
@@ -33,10 +35,13 @@ public class userActions extends JPanel {
                 try {
                     //When the user starts a session, a new Window appears
                     //The second argument starts a new UDP session
-                    new chatWindow(username, (String) L.getSelectedValue(), mainWindowActions.beginSession(port));
+                    DatagramSocket beginSessionNotifySocket = new DatagramSocket(4999);
+                    userData otherUserData = userList.getUserByName((String) L.getSelectedValue());
+                    new chatWindow(username, (String) L.getSelectedValue(), mainWindowActions.beginSession(username, port, otherUserData, beginSessionNotifySocket));
+                    beginSessionNotifySocket.close();
                     port++;
                 } catch (Exception ex) {
-                    System.out.println("aled");
+                    System.out.println("Failed to begin the session (userActions)");
                 }
             }
             else {

@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
+import GUI.chatWindow;
 
 public class mainWindowActions {
 
@@ -47,21 +48,27 @@ public class mainWindowActions {
     }
 
     //Methods
-    public chatSession beginSession(int port) {
+    public chatSession beginSession(String usr, int port, int portListen, userData otherUserData, DatagramSocket d) {
         try {
-            return new chatSession(new DatagramSocket(port));
+            String msg = usr + "|begin";
+            DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
+            d.send(outPacket);
+            return new chatSession(new DatagramSocket(port), otherUserData);
         } catch (SocketException e) {
             e.printStackTrace();
             return null;
+        } catch (Exception r){
+            r.printStackTrace();
+            return null;
         }
+
     }
 
     public void changeUsername(String usr){
         if (checkUsername(usr)){
             try {
                 DatagramSocket socket = new DatagramSocket();
-                //TODO : Send the message to a proper address
-                DatagramPacket outPacket = new DatagramPacket(usr.getBytes(), usr.length(), InetAddress.getByName("10.1.255.255"), 5000);
+                DatagramPacket outPacket = new DatagramPacket(usr.getBytes(), usr.length(), InetAddress.getByName("10.1.255.255"), 3000);
                 socket.setBroadcast(true);
                 socket.send(outPacket);
             } catch(Exception e){
@@ -77,7 +84,7 @@ public class mainWindowActions {
 
             //Creating the server socket for potential reception
             DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 2003);
+            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 3000);
             socket.setBroadcast(true);
             socket.send(outPacket);
 
@@ -150,7 +157,7 @@ class messageTreatment extends Thread {
                 if (theirs == me){
                     try {
                         DatagramSocket clientSocket = new DatagramSocket();
-                        DatagramPacket outPacket = new DatagramPacket(me.getBytes(),me.length(), address, port);
+                        DatagramPacket outPacket = new DatagramPacket(me.getBytes(),me.length(), address, 2004);
                         clientSocket.send(outPacket);
                     } catch (Exception e) {
                         System.out.println("Could not send the message");
@@ -165,22 +172,28 @@ class messageTreatment extends Thread {
                 break;
             default:
                 try {
-                    //Retrieving the MAC address
-                    InetAddress ip = InetAddress.getLocalHost();
-                    NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-                    byte[] mac = network.getHardwareAddress();
+                    //Check if the user already exists in the list
+                    if (contactList.exists(data[1])){
+                        contactList.modifyUsername(data[1], theirs);
+                    }
 
-                    //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7"
-                    String message = me + "|" + Arrays.toString(mac);
+                    else {
+                        //Retrieving the MAC address
+                        InetAddress ip = InetAddress.getLocalHost();
+                        NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+                        byte[] mac = network.getHardwareAddress();
 
-                    //Sending the sendHello package with username and mac address in broadcast mode
-                    DatagramSocket socket = new DatagramSocket();
-                    DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 2001);
-                    socket.setBroadcast(true);
-                    socket.send(outPacket);
+                        //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
+                        String message = me + "|" + Arrays.toString(mac) + "|" + ip.toString();
 
-                    //Update the activeList table
-                    contactList.addElement(new userData(data[0], data[1]));
+                        //Returning a packet with our info, so that the new user can create their active list
+                        DatagramSocket socket = new DatagramSocket();
+                        DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), address, 3000);
+                        socket.send(outPacket);
+
+                        //Update the activeList table
+                        contactList.addElement(new userData(data[0], data[1], data[2]));
+                    }
                 } catch (Exception e) {
                     System.out.println("Could not send the message");
                 }

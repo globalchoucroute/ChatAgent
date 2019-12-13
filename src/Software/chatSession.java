@@ -5,18 +5,33 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 
+
 public class chatSession {
 
     //Attributes
     String[][] messageList = new String[2][];
     private DatagramSocket clientSock;
+    public InetAddress ipDest;
+    public String macAddress;
+    public static int recPort = 6000;
 
+    // TODO : Passage en TCP parce que UDP c'est rincé
     //Constructor
-    public chatSession(DatagramSocket ds){
+    public chatSession(DatagramSocket ds, userData userData){
         clientSock = ds;
+
+        //Recover the IP address from the user info
+        String ipDestName = userData.getIPAddress();
+        try {
+            this.ipDest = InetAddress.getByName(ipDestName);
+            this.macAddress = userData.getMacAddress();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         Thread t = new Thread(() -> {
             try{
-                DatagramSocket serverSocket = new DatagramSocket(2345);
+                DatagramSocket serverSocket = new DatagramSocket(recPort);
 
                 while(true){
                     //Creating the buffer for incoming messages
@@ -34,14 +49,15 @@ public class chatSession {
                     packet.setLength(buffer.length);
 
                 }
-            } catch (Exception e) { System.out.println("pb recv message chatsession");}
+            } catch (Exception e) { System.out.println("Failed to recover message (chatSession)");}
         });
         t.start();
+        recPort++;
     }
 
     //Methods
-    public DatagramPacket buildPDU(String msg, InetAddress address, int port){
-        return new DatagramPacket(msg.getBytes(),msg.length(), address, port);
+    public DatagramPacket buildPDU(String msg, int port){
+        return new DatagramPacket(msg.getBytes(),msg.length(), ipDest, port);
     }
 
     public void sendMessage(DatagramPacket pdu){
