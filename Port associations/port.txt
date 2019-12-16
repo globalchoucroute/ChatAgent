@@ -5,7 +5,7 @@ recvUsernameCheck = 	2004
 
 beginSession = 5000, 5001, 5002, 5003, 5004, etc...
 recvMessages = 6000, 6001, 6002, 6003, 6004, etc...
-
+notifybeginSession = 4999
 waitingSocket = 3000
 
 

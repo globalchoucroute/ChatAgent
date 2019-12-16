@@ -1,11 +1,9 @@
 package Software;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.net.*;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Timer;
 public class connection {
 
@@ -27,6 +25,7 @@ public class connection {
         try {
             //Message format for the username check : "jean-michel|check"
             String message = usr + "|check";
+            System.out.println("usernameCheck message : "+ message);
 
             //Creating the server socket for potential reception
             DatagramSocket socket = new DatagramSocket();
@@ -79,12 +78,31 @@ public class connection {
 
         try {
             //Retrieving the MAC address
-            ip = InetAddress.getLocalHost();
-            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+            ip = Inet4Address.getLocalHost();
+            NetworkInterface network = NetworkInterface.getByName("eth0");
+            Enumeration<InetAddress> addresses = network.getInetAddresses();
+            while (addresses.hasMoreElements()){
+                InetAddress address = addresses.nextElement();
+                if (address instanceof Inet4Address && !address.isLoopbackAddress()){
+                    ip = address;
+                }
+            }
             byte[] mac = network.getHardwareAddress();
 
+            //Formatting the message for a clean display
+            String ips = ip.toString().substring(1);
+            StringBuilder sb = new StringBuilder(18);
+            for (byte b : mac) {
+                if (sb.length() > 0)
+                    sb.append(':');
+                sb.append(String.format("%02x", b));
+            }
+            String macs = sb.toString();
+
+
             //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
-            String message = usr + "|" + Arrays.toString(mac) + "|" + ip.toString();
+            String message = usr + "|" + macs + "|" + ips;
+            System.out.println("sendHello message : "+message);
 
             //Sending the sendHello package with username and mac address in broadcast mode
             DatagramSocket socket = new DatagramSocket();

@@ -56,8 +56,7 @@ public class chatWindow extends JFrame {
                         text.setText("");
 
                         try {
-                            // TODO : IL FAUT UNIFIER LES PORTS OSKOUR
-                            session.sendMessage(session.buildPDU(text.getText(), 2345));
+                            session.sendMessage(text.getText());
                         } catch (Exception ex) {
                             System.out.println("Failed to send the message");
                         }
@@ -72,8 +71,7 @@ public class chatWindow extends JFrame {
                     messageDisplay.append("\n" + username + " : " + text.getText());
                     text.setText("");
                     try {
-                        // TODO : IL FAUT UNIFIER LES PORTS OSKOUR
-                        session.sendMessage(session.buildPDU(text.getText(),2345));
+                        session.sendMessage(text.getText());
                     } catch (Exception ex) {
                         System.out.println("Failed to send the message");
                     }

@@ -1,8 +1,10 @@
 package Software;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 
@@ -14,10 +16,43 @@ public class chatSession {
     public InetAddress ipDest;
     public String macAddress;
     public static int recPort = 6000;
+    public PrintWriter out;
 
     // TODO : Passage en TCP parce que UDP c'est rincé
-    //Constructor
-    public chatSession(DatagramSocket ds, userData userData){
+    public chatSession(int port, userData otherUserData, boolean isServer){
+        try {
+            Socket connectionSocket;
+            if (isServer) {
+                ServerSocket serverSocket = new ServerSocket(port);
+                System.out.println("Message avant accept");
+                connectionSocket = serverSocket.accept();
+                System.out.println("Message après accept");
+            } else {
+                connectionSocket = new Socket(InetAddress.getByName(otherUserData.getIPAddress()), port);
+            }
+            this.out = new PrintWriter(connectionSocket.getOutputStream(), true);
+            Thread connectionThread = new Thread(() -> {
+                try {
+                    while(true){
+                        BufferedReader bufferIn = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+                        String message = bufferIn.readLine();
+                        System.out.println(message);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            connectionThread.start();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(String message){
+        out.println(message);
+    }
+
+    /*public chatSession(DatagramSocket ds, userData userData){
         clientSock = ds;
 
         //Recover the IP address from the user info
@@ -66,11 +101,7 @@ public class chatSession {
         } catch (Exception e) {
             System.out.println("Failed to send the message :/");
         }
-    }
-
-    String receiveMessage(){
-        return "";
-    }
+    }*/
 
     String retrieveTimeStamp(int indexMsg){
         return "";
