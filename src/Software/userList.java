@@ -1,6 +1,8 @@
 package Software;
 
 
+import GUI.contactList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -8,9 +10,11 @@ import java.util.Collections;
 public class userList {
 
     public ArrayList list;
+    public GUI.contactList GUIcontactList;
 
     public userList(){
         list = new ArrayList();
+        GUIcontactList = null;
     }
 
     public int getLength(){
@@ -42,6 +46,8 @@ public class userList {
     //Add an element to the list
     public void addElement(userData userData){
         list.add(userData);
+        System.out.println("Element added in the user list : " + userData.getUsername());
+        //GUIcontactList.addContact(userData);
         //Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
     }
 
@@ -66,5 +72,9 @@ public class userList {
         int index = list.indexOf(user);
 
         list.set(index, new userData(name, mac, user.getIPAddress()));
+    }
+
+    public void setGUIcontactList(contactList contactList){
+        GUIcontactList = contactList;
     }
 }

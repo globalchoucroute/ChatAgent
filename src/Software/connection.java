@@ -24,7 +24,7 @@ public class connection {
     public boolean checkUsername(String usr){
         try {
             //Message format for the username check : "jean-michel|check"
-            String message = usr + "|check";
+            String message = usr + " check";
             System.out.println("usernameCheck message : "+ message);
 
             //Creating the server socket for potential reception
@@ -101,7 +101,7 @@ public class connection {
 
 
             //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
-            String message = usr + "|" + macs + "|" + ips;
+            String message = usr + " " + macs + " " + ips;
             System.out.println("sendHello message : "+message);
 
             //Sending the sendHello package with username and mac address in broadcast mode
@@ -133,8 +133,9 @@ public class connection {
                             System.out.println(msg);
 
                             //Parse the received string in order to update the activeList properly
-                            String[] data = msg.split("|");
+                            String[] data = msg.split(" ");
                             userList.addElement(new userData(data[0], data[1], data[2]));
+                            System.out.println("New user added : " + data[0]);
 
                             //Resetting datagram length
                             packet.setLength(buffer.length);

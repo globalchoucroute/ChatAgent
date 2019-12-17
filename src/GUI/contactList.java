@@ -62,13 +62,19 @@ public class contactList extends JPanel {
         for (int i = 0; i < userList.getLength(); i++){
             listModel.addElement(userList.getUser(i).getUsername());
         }
+
         return listModel;
+    }
+
+    public void addContact(userData userData){
+        listModel.addElement(userData.getUsername());
     }
 
     public DefaultListModel updateList(userList userList){
         for (int i = 0; i < userList.getLength(); i++){
             listModel.addElement(userList.getUser(i).getUsername());
         }
+        userList.setGUIcontactList(this);
         return listModel;
     }
 }

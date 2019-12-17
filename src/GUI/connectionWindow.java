@@ -11,10 +11,12 @@ public class connectionWindow extends JFrame {
     //Attributes
     public JButton connectButton = new JButton("Connect");
     public JTextField userNameField = new JTextField("Type in your username");
+    public JFrame parent;
 
     //Constructor
     public connectionWindow (){
         super();
+        parent = this;
         userNameField.setSize(new Dimension(100, 50));
         userNameField.setPreferredSize(new Dimension(100, 20));
         connectButton.setPreferredSize(new Dimension(50,20));
@@ -34,6 +36,9 @@ public class connectionWindow extends JFrame {
                              setVisible(false);
                              dispose();
                          }
+                         else {
+                             JOptionPane.showMessageDialog(parent, "This username is already taken !");
+                         }
                      }
                  }
              }
@@ -49,6 +54,9 @@ public class connectionWindow extends JFrame {
                         mainWindow mainWindow = new mainWindow(username, userList);
                         setVisible(false);
                         dispose();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(parent, "This username is already taken !");
                     }
                 }
             }

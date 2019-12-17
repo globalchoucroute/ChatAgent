@@ -43,7 +43,7 @@ public class mainWindowActions {
                     System.out.println("Started the message treatment thread");
                 }
             } catch (Exception e){
-                System.out.println("J'EN AI MARRE DES EXCEPTIONS ALORS QUE C'EST BIEN PRATIQUE POURTANT");
+                System.out.println("Error while setting up the reception socket (mainWindowActions)");
             }
         });
         this.username = username;
@@ -85,7 +85,7 @@ public class mainWindowActions {
     public boolean checkUsername(String usr){
         try {
             //Message format for the username check : "jean-michel|check"
-            String message = usr + "|check";
+            String message = usr + " check";
             System.out.println("usernameCheck message : "+ message);
 
             //Creating the server socket for potential reception
@@ -212,7 +212,7 @@ class messageTreatment extends Thread {
                         String macs = sb.toString();
 
                         //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
-                        String message = me + "|" + macs + "|" + ips;
+                        String message = me + " " + macs + " " + ips;
                         System.out.println("RecvHello message : "+message);
 
                         //Returning a packet with our info, so that the new user can create their active list
@@ -222,21 +222,15 @@ class messageTreatment extends Thread {
 
                         //Update the activeList table
                         contactList.addElement(new userData(data[0], data[1], data[2]));
+                        System.out.println("New user added : " + data[0]);
+                        break;
                     }
                 } catch (Exception e) {
                     System.out.println("Could not send the message");
                 }
-            return;
+                break;
         }
     }
 
-    //getters
-    public String getOtherUsername(){
-        return data[0];
-    }
-
-    public int getPort(){
-        return Integer.parseInt(data[2]);
-    }
 
 }

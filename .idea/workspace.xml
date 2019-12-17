@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="ChatAgent:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="76a751c7-8851-40f0-b236-a00c74e795e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Software/portAssociation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ChatAgent_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Port associations/port.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Port associations/port.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/chatWindow$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/chatSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/chatSession.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/mainWindowActions.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/mainWindowActions.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/messageTreatment.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/messageTreatment.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/userList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/userList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/chatWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/chatWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Software/chatSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/chatSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/connectionWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/connectionWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/contactList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/contactList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Software/connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/connection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Software/mainWindowActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/mainWindowActions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Software/userList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/userList.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +46,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="findjar.last.used.dir" value="$PROJECT_DIR$/../../../gson" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../gson" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="configurable.group.build" />
@@ -117,6 +118,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575538856045" />
+    <state x="698" y="379" width="527" height="427" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1576587020884">
+      <screen x="0" y="27" width="1920" height="1029" />
+    </state>
+    <state x="698" y="379" width="527" height="427" key="#com.intellij.ide.util.TreeClassChooserDialog/0.27.1920.1029@0.27.1920.1029" timestamp="1576587020884" />
     <state x="801" y="434" width="310" height="215" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1576054233771">
       <screen x="0" y="27" width="1920" height="1029" />
     </state>
@@ -129,35 +134,36 @@
       <screen x="0" y="27" width="1920" height="1149" />
     </state>
     <state x="622" y="403" width="685" height="510" key="FileChooserDialogImpl/0.27.1920.1149@0.27.1920.1149" timestamp="1576241630680" />
-    <state width="1874" height="309" key="GridCell.Tab.0.bottom" timestamp="1576515731084">
-      <screen x="0" y="27" width="1920" height="1149" />
+    <state width="1874" height="269" key="GridCell.Tab.0.bottom" timestamp="1576589745351">
+      <screen x="0" y="27" width="1920" height="1029" />
     </state>
-    <state width="1874" height="270" key="GridCell.Tab.0.bottom/0.27.1920.1029@0.27.1920.1029" timestamp="1576146571943" />
+    <state width="1874" height="269" key="GridCell.Tab.0.bottom/0.27.1920.1029@0.27.1920.1029" timestamp="1576589745351" />
     <state width="1874" height="309" key="GridCell.Tab.0.bottom/0.27.1920.1149@0.27.1920.1149" timestamp="1576515731084" />
-    <state width="1874" height="309" key="GridCell.Tab.0.center" timestamp="1576515731084">
-      <screen x="0" y="27" width="1920" height="1149" />
+    <state width="1874" height="269" key="GridCell.Tab.0.center" timestamp="1576589745351">
+      <screen x="0" y="27" width="1920" height="1029" />
     </state>
-    <state width="1874" height="270" key="GridCell.Tab.0.center/0.27.1920.1029@0.27.1920.1029" timestamp="1576146571941" />
+    <state width="1874" height="269" key="GridCell.Tab.0.center/0.27.1920.1029@0.27.1920.1029" timestamp="1576589745351" />
     <state width="1874" height="309" key="GridCell.Tab.0.center/0.27.1920.1149@0.27.1920.1149" timestamp="1576515731084" />
-    <state width="1874" height="309" key="GridCell.Tab.0.left" timestamp="1576515731084">
-      <screen x="0" y="27" width="1920" height="1149" />
+    <state width="1874" height="269" key="GridCell.Tab.0.left" timestamp="1576589745350">
+      <screen x="0" y="27" width="1920" height="1029" />
     </state>
-    <state width="1874" height="270" key="GridCell.Tab.0.left/0.27.1920.1029@0.27.1920.1029" timestamp="1576146571934" />
+    <state width="1874" height="269" key="GridCell.Tab.0.left/0.27.1920.1029@0.27.1920.1029" timestamp="1576589745350" />
     <state width="1874" height="309" key="GridCell.Tab.0.left/0.27.1920.1149@0.27.1920.1149" timestamp="1576515731084" />
-    <state width="1874" height="309" key="GridCell.Tab.0.right" timestamp="1576515731084">
-      <screen x="0" y="27" width="1920" height="1149" />
+    <state width="1874" height="269" key="GridCell.Tab.0.right" timestamp="1576589745351">
+      <screen x="0" y="27" width="1920" height="1029" />
     </state>
-    <state width="1874" height="270" key="GridCell.Tab.0.right/0.27.1920.1029@0.27.1920.1029" timestamp="1576146571942" />
+    <state width="1874" height="269" key="GridCell.Tab.0.right/0.27.1920.1029@0.27.1920.1029" timestamp="1576589745351" />
     <state width="1874" height="309" key="GridCell.Tab.0.right/0.27.1920.1149@0.27.1920.1149" timestamp="1576515731084" />
-    <state x="456" y="237" width="1026" height="844" key="SettingsEditor" timestamp="1576241595899">
-      <screen x="0" y="27" width="1920" height="1149" />
+    <state x="456" y="211" width="1026" height="844" key="SettingsEditor" timestamp="1576587026804">
+      <screen x="0" y="27" width="1920" height="1029" />
     </state>
+    <state x="456" y="211" width="1026" height="844" key="SettingsEditor/0.27.1920.1029@0.27.1920.1029" timestamp="1576587026804" />
     <state x="456" y="237" width="1026" height="844" key="SettingsEditor/0.27.1920.1149@0.27.1920.1149" timestamp="1576241595899" />
-    <state x="661" y="404" key="com.intellij.ide.util.TipDialog" timestamp="1576507101845">
-      <screen x="0" y="27" width="1920" height="1149" />
+    <state x="661" y="365" key="com.intellij.ide.util.TipDialog" timestamp="1576585503955">
+      <screen x="0" y="27" width="1920" height="1029" />
     </state>
     <state x="661" y="342" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575536560901" />
-    <state x="661" y="365" key="com.intellij.ide.util.TipDialog/0.27.1920.1029@0.27.1920.1029" timestamp="1576146309873" />
+    <state x="661" y="365" key="com.intellij.ide.util.TipDialog/0.27.1920.1029@0.27.1920.1029" timestamp="1576585503955" />
     <state x="661" y="404" key="com.intellij.ide.util.TipDialog/0.27.1920.1149@0.27.1920.1149" timestamp="1576507101845" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1575541521898">
       <screen x="0" y="0" width="1920" height="1040" />
