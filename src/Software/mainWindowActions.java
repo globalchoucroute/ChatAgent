@@ -22,9 +22,23 @@ public class mainWindowActions {
 
     //Constructor
     public mainWindowActions(String username, userList userList) {
+
         Thread messageReception = new Thread(() -> {
             try {
                 DatagramSocket serverSocket = new DatagramSocket(3000);
+
+                //This is the message we receive through port 3000
+                String message;
+
+                //Contains the different values of the message
+                String[] messageData;
+
+
+                int port;
+                InetAddress address;
+                String theirUsername;
+                String answerMessage;
+                userData otherUser;
 
                 while(true) {
 
@@ -35,12 +49,91 @@ public class mainWindowActions {
                     System.out.println("Waiting for a packet reception");
                     //Recover the datagram sent by client
                     serverSocket.receive(packet);
+                    message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
+                    //Setup the variables for treatment
+                    port = packet.getPort();
+                    address = packet.getAddress();
+                    messageData = message.split(" ");
+                    theirUsername = messageData[0];
 
+                    //Start the message treatment
+                    System.out.println("messageTreatment running");
+                    System.out.println("Username : " + messageData[0] + "\nInstruction : " + messageData[1]);
 
-                    messageTreatment m = new messageTreatment(username, userList, packet);
-                    m.start();
+                    switch (messageData[1]){
+                        case "check":
+                            if (theirUsername == username){
+                                try {
+                                    DatagramSocket clientSocket = new DatagramSocket();
+                                    DatagramPacket outPacket = new DatagramPacket(username.getBytes(),username.length(), address, 2004);
+                                    clientSocket.send(outPacket);
+                                } catch (Exception e) {
+                                    System.out.println("Could not send the message");
+                                }
+                            }
+                            break;
+                        case "begin":
+                            System.out.println("Received the begin message");
+                            otherUser = userList.getUserByName(theirUsername);
+                            new chatWindow(username, theirUsername, new chatSession(port, otherUser, false));
+                            break;
+                        case "bye":
+                            //TODO : Bye case for the message treatment
+                            break;
+                        case "disconnect":
+                            System.out.println("Received the disconnect message");
+                            otherUser = userList.getUserByName(theirUsername);
+                            userList.deleteElement(otherUser);
+                            break;
+                        default:
+                            try {
+                                //Check if the user already exists in the list
+                                if (contactList.exists(messageData[1])){
+                                    contactList.modifyUsername(messageData[1], theirUsername);
+                                }
 
-                    System.out.println("Started the message treatment thread");
+                                else {
+                                    //Retrieving the MAC address
+                                    InetAddress ip = InetAddress.getLocalHost();
+                                    NetworkInterface network = NetworkInterface.getByName("eth0");
+                                    Enumeration<InetAddress> addresses = network.getInetAddresses();
+                                    while (addresses.hasMoreElements()){
+                                        InetAddress currentAddress = addresses.nextElement();
+                                        if (currentAddress instanceof Inet4Address && !currentAddress.isLoopbackAddress()){
+                                            ip = currentAddress;
+                                        }
+                                    }
+                                    byte[] mac = network.getHardwareAddress();
+
+                                    //Formatting the message for a clean display
+                                    String ips = ip.toString().substring(1);
+                                    StringBuilder sb = new StringBuilder(18);
+                                    for (byte b : mac) {
+                                        if (sb.length() > 0)
+                                            sb.append(':');
+                                        sb.append(String.format("%02x", b));
+                                    }
+                                    String macs = sb.toString();
+
+                                    //Message format for the sendHello = "jean-michel 00:1B:44:11:3A:B7 192.168.0.1"
+                                    answerMessage = username + " " + macs + " " + ips;
+                                    System.out.println("RecvHello message : "+answerMessage);
+
+                                    //Returning a packet with our info, so that the new user can create their active list
+                                    DatagramSocket socket = new DatagramSocket();
+                                    DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), address, 2002);
+                                    socket.send(outPacket);
+
+                                    //Update the activeList table
+                                    contactList.addElement(new userData(messageData[0], messageData[1], messageData[2]));
+                                    System.out.println("New user added : " + messageData[0]);
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Could not send the message");
+                            }
+                            break;
+                    }
                 }
             } catch (Exception e){
                 System.out.println("Error while setting up the reception socket (mainWindowActions)");
@@ -54,7 +147,6 @@ public class mainWindowActions {
     //Methods
     public chatSession beginSession(String usr, int port, userData otherUserData, DatagramSocket d) {
         try {
-            //TODO : FORMAT DES MESSAGES POUR LE TRAITEMENT
             String msg = usr + " begin "+ port;
             System.out.println("beginSession message sent :" + msg);
             DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
@@ -211,7 +303,7 @@ class messageTreatment extends Thread {
                         }
                         String macs = sb.toString();
 
-                        //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
+                        //Message format for the sendHello = "jean-michel 00:1B:44:11:3A:B7 192.168.0.1"
                         String message = me + " " + macs + " " + ips;
                         System.out.println("RecvHello message : "+message);
 
