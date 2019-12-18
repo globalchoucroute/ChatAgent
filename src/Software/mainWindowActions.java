@@ -39,8 +39,19 @@ public class mainWindowActions {
                 String theirUsername;
                 String answerMessage;
                 userData otherUser;
-
                 while(true) {
+
+                    //Debugging
+                    System.out.println("List of online users as it is during the message reception thread");
+                    for (int i = 0; i<userList.getLength(); i++){
+                        System.out.println("*************************************");
+                        System.out.println("User " + i + " :");
+                        System.out.println("Username : " + userList.getUser(i).getUsername());
+                        System.out.println("MAC address : " + userList.getUser(i).getMacAddress());
+                        System.out.println("IP address : " + userList.getUser(i).getIPAddress());
+                    }
+                    System.out.println("*************************************");
+
 
                     //Creating the buffer for incoming messages
                     byte[] buffer = new byte[1024];
@@ -51,7 +62,6 @@ public class mainWindowActions {
                     serverSocket.receive(packet);
                     message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
                     //Setup the variables for treatment
-                    port = packet.getPort();
                     address = packet.getAddress();
                     messageData = message.split(" ");
                     theirUsername = messageData[0];
@@ -62,7 +72,7 @@ public class mainWindowActions {
 
                     switch (messageData[1]){
                         case "check":
-                            if (theirUsername == username){
+                            if (theirUsername.equals(username)){
                                 try {
                                     DatagramSocket clientSocket = new DatagramSocket();
                                     DatagramPacket outPacket = new DatagramPacket(username.getBytes(),username.length(), address, 2004);
@@ -73,8 +83,10 @@ public class mainWindowActions {
                             }
                             break;
                         case "begin":
-                            System.out.println("Received the begin message");
+                            port = Integer.parseInt(messageData[2]);
+                            System.out.println("Received the begin message with username  = " + theirUsername + " and port = " + port);
                             otherUser = userList.getUserByName(theirUsername);
+                            System.out.println("The client needs to send to : "+otherUser.getIPAddress() + "\nPort : " + port);
                             new chatWindow(username, theirUsername, new chatSession(port, otherUser, false));
                             break;
                         case "bye":
@@ -88,8 +100,8 @@ public class mainWindowActions {
                         default:
                             try {
                                 //Check if the user already exists in the list
-                                if (contactList.exists(messageData[1])){
-                                    contactList.modifyUsername(messageData[1], theirUsername);
+                                if (userList.exists(messageData[1])){
+                                    userList.modifyUsername(messageData[1], theirUsername);
                                 }
 
                                 else {
@@ -121,11 +133,11 @@ public class mainWindowActions {
 
                                     //Returning a packet with our info, so that the new user can create their active list
                                     DatagramSocket socket = new DatagramSocket();
-                                    DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), address, 2002);
+                                    DatagramPacket outPacket = new DatagramPacket(answerMessage.getBytes(), answerMessage.length(), address, 2002);
                                     socket.send(outPacket);
 
                                     //Update the activeList table
-                                    contactList.addElement(new userData(messageData[0], messageData[1], messageData[2]));
+                                    userList.addElement(new userData(messageData[0], messageData[1], messageData[2]));
                                     System.out.println("New user added : " + messageData[0]);
                                     break;
                                 }
@@ -137,6 +149,7 @@ public class mainWindowActions {
                 }
             } catch (Exception e){
                 System.out.println("Error while setting up the reception socket (mainWindowActions)");
+                e.printStackTrace();
             }
         });
         this.username = username;
@@ -224,105 +237,5 @@ public class mainWindowActions {
         //returns true if no message has been received
         return control.unique;
     }
-
-}
-
-class messageTreatment extends Thread {
-
-    public String me;
-    public String theirs;
-    public String message;
-    public userList contactList;
-    public InetAddress address;
-    public int port;
-    public String[] data;
-    messageTreatment(String a, userList u, DatagramPacket packet){
-        contactList = u;
-        me = a;
-        try{
-            message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
-            port = packet.getPort();
-            address = packet.getAddress();
-        } catch (Exception e){
-            System.out.println("Error");
-        }
-        data = this.message.split(" ");
-    }
-
-    public void run(){
-        System.out.println("messageTreatment thread running with " + message);
-        this.theirs=data[0];
-        System.out.println("Username : " + data[0] + "\nInstruction : " + data[1]);
-        switch (data[1]){
-            case "check":
-                if (theirs == me){
-                    try {
-                        DatagramSocket clientSocket = new DatagramSocket();
-                        DatagramPacket outPacket = new DatagramPacket(me.getBytes(),me.length(), address, 2004);
-                        clientSocket.send(outPacket);
-                    } catch (Exception e) {
-                        System.out.println("Could not send the message");
-                    }
-                }
-                break;
-            case "begin":
-                System.out.println("Received the begin message");
-                userData otherUser = contactList.getUserByName(theirs);
-                chatWindow chatWindow = new chatWindow(me, theirs, new chatSession(port, otherUser, false));
-                break;
-            case "bye":
-                //TODO : Bye case for the message treatment
-                break;
-            default:
-                try {
-                    //Check if the user already exists in the list
-                    if (contactList.exists(data[1])){
-                        contactList.modifyUsername(data[1], theirs);
-                    }
-
-                    else {
-                        //Retrieving the MAC address
-                        InetAddress ip = InetAddress.getLocalHost();
-                        NetworkInterface network = NetworkInterface.getByName("eth0");
-                        Enumeration<InetAddress> addresses = network.getInetAddresses();
-                        while (addresses.hasMoreElements()){
-                            InetAddress address = addresses.nextElement();
-                            if (address instanceof Inet4Address && !address.isLoopbackAddress()){
-                                ip = address;
-                            }
-                        }
-                        byte[] mac = network.getHardwareAddress();
-
-                        //Formatting the message for a clean display
-                        String ips = ip.toString().substring(1);
-                        StringBuilder sb = new StringBuilder(18);
-                        for (byte b : mac) {
-                            if (sb.length() > 0)
-                                sb.append(':');
-                            sb.append(String.format("%02x", b));
-                        }
-                        String macs = sb.toString();
-
-                        //Message format for the sendHello = "jean-michel 00:1B:44:11:3A:B7 192.168.0.1"
-                        String message = me + " " + macs + " " + ips;
-                        System.out.println("RecvHello message : "+message);
-
-                        //Returning a packet with our info, so that the new user can create their active list
-                        DatagramSocket socket = new DatagramSocket();
-                        DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), address, 2002);
-                        socket.send(outPacket);
-
-                        //Update the activeList table
-                        contactList.addElement(new userData(data[0], data[1], data[2]));
-                        System.out.println("New user added : " + data[0]);
-                        break;
-                    }
-                } catch (Exception e) {
-                    System.out.println("Could not send the message");
-                }
-                break;
-        }
-    }
-
 
 }

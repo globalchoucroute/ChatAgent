@@ -22,6 +22,7 @@ public class connectionWindow extends JFrame {
         connectButton.setPreferredSize(new Dimension(50,20));
         add(userNameField, BorderLayout.CENTER);
         add(connectButton, BorderLayout.SOUTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         connection connection = new connection();
 
         userNameField.addKeyListener(new KeyAdapter() {
@@ -38,6 +39,7 @@ public class connectionWindow extends JFrame {
                          }
                          else {
                              JOptionPane.showMessageDialog(parent, "This username is already taken !");
+                             connection.setControlTrue();
                          }
                      }
                  }
@@ -57,6 +59,7 @@ public class connectionWindow extends JFrame {
                     }
                     else {
                         JOptionPane.showMessageDialog(parent, "This username is already taken !");
+                        connection.setControlTrue();
                     }
                 }
             }

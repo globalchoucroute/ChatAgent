@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class chatWindow extends JFrame {
 
@@ -53,33 +54,40 @@ public class chatWindow extends JFrame {
                 if (key == KeyEvent.VK_ENTER) {
                     if (text.getText() != null){
                         messageDisplay.append("\n" + username + " : " + text.getText());
-                        text.setText("");
-
                         try {
                             session.sendMessage(text.getText());
                         } catch (Exception ex) {
                             System.out.println("Failed to send the message");
                         }
+                        text.setText("");
                     }
                 }
             }
         });
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (text.getText() != null){
-                    messageDisplay.append("\n" + username + " : " + text.getText());
-                    text.setText("");
-                    try {
-                        session.sendMessage(text.getText());
-                    } catch (Exception ex) {
-                        System.out.println("Failed to send the message");
-                    }
+        sendButton.addActionListener(e -> {
+            if (text.getText() != null){
+                messageDisplay.append("\n" + username + " : " + text.getText());
+                try {
+                    session.sendMessage(text.getText());
+                } catch (Exception ex) {
+                    System.out.println("Failed to send the message");
                 }
+                text.setText("");
             }
         });
 
-
+        Thread messageReceptionThread = new Thread (() -> {
+            ArrayList tab = new ArrayList();
+           while (true){
+               if (session.getIsNewMessage()){
+                   tab = session.getMessages();
+                   for (int i = 0; i<tab.size(); i++){
+                       messageDisplay.append("\n" + title + " : " + tab.get(i));
+                   }
+               }
+           }
+        });
+        messageReceptionThread.start();
         pack();
         setVisible(true);
     }

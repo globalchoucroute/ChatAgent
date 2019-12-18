@@ -23,16 +23,19 @@ public class userList {
 
     public userData getUserByName(String name) {
         for (int i = 0; i < this.getLength(); i++) {
-            if (this.getUser(i).username == name) {
+            System.out.println("Checking current username : " + getUser(i).getUsername());
+            if (getUser(i).getUsername().equals(name)) {
+                System.out.println("User found in the getUserByName : " + getUser(i).getUsername());
                 return getUser(i);
+
             }
         }
         return null;
     }
 
     public userData getUserByMac(String mac){
-        for (int i = 0; i < this.getLength(); i++) {
-            if (this.getUser(i).macAddress == mac) {
+        for (int i = 0; i < list.size(); i++) {
+            if (getUser(i).getMacAddress().equals(mac)) {
                 return getUser(i);
             }
         }
@@ -40,15 +43,23 @@ public class userList {
     }
 
     public userData getUser(int index){
-        return (userData) this.list.get(index);
+        return (userData) list.get(index);
     }
 
-    //Add an element to the list
+
+
+    //Initiate the list for the first connection
+    public void addElementInit(userData userData){
+        list.add(userData);
+        System.out.println("Element added in the user list : " + userData.getUsername());
+        //Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
+    }
+
+    //add an element to the list
     public void addElement(userData userData){
         list.add(userData);
         System.out.println("Element added in the user list : " + userData.getUsername());
-        //GUIcontactList.addContact(userData);
-        //Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
+        GUIcontactList.addContact(userData);
     }
 
     //Delete an element from the list

@@ -17,22 +17,6 @@ public class contactList extends JPanel {
         super();
         this.listModel = new DefaultListModel<>();
         listModel = initContactList(userList);
-        listModel.addElement("Premier utilisateur");
-        listModel.addElement("Deuxieme utilisateur");
-        listModel.addElement("Troisieme utilisateur");
-        listModel.addElement("Quatrieme utilisateur");
-        listModel.addElement("Premier utilisateur");
-        listModel.addElement("Deuxieme utilisateur");
-        listModel.addElement("Troisieme utilisateur");
-        listModel.addElement("Quatrieme utilisateur");
-        listModel.addElement("Premier utilisateur");
-        listModel.addElement("Deuxieme utilisateur");
-        listModel.addElement("Troisieme utilisateur");
-        listModel.addElement("Quatrieme utilisateur");
-        listModel.addElement("Premier utilisateur");
-        listModel.addElement("Deuxieme utilisateur");
-        listModel.addElement("Troisieme utilisateur");
-        listModel.addElement("Quatrieme utilisateur");
 
         this.contacts = new JList<>(listModel);
         contacts.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -62,7 +46,7 @@ public class contactList extends JPanel {
         for (int i = 0; i < userList.getLength(); i++){
             listModel.addElement(userList.getUser(i).getUsername());
         }
-
+        userList.setGUIcontactList(this);
         return listModel;
     }
 
@@ -74,7 +58,7 @@ public class contactList extends JPanel {
         for (int i = 0; i < userList.getLength(); i++){
             listModel.addElement(userList.getUser(i).getUsername());
         }
-        userList.setGUIcontactList(this);
+
         return listModel;
     }
 }

@@ -13,6 +13,12 @@ public class connection {
     //Control class for the checkUsername shared boolean
     static class Control {
         public volatile boolean unique = true;
+        public boolean getUnique () {
+            return unique;
+        }
+        public void setTrue(){
+            unique = true;
+        }
     }
     final Control control = new Control();
 
@@ -134,7 +140,7 @@ public class connection {
 
                             //Parse the received string in order to update the activeList properly
                             String[] data = msg.split(" ");
-                            userList.addElement(new userData(data[0], data[1], data[2]));
+                            userList.addElementInit(new userData(data[0], data[1], data[2]));
                             System.out.println("New user added : " + data[0]);
 
                             //Resetting datagram length
@@ -157,12 +163,11 @@ public class connection {
         } catch( Exception e){
             System.out.println("getLocalhost failed");
         }
-
-        userList.addElement(new userData("Premier utilisateur", "mac1", "127.0.0.1"));
-        userList.addElement(new userData("Deuxieme utilisateur", "mac2", "127.0.0.1"));
-        userList.addElement(new userData("Troisieme utilisateur", "mac3", "127.0.0.1"));
-        userList.addElement(new userData("Quatrieme utilisateur", "mac4", "127.0.0.1"));
-        //returns a list of active users, linked with their mac address
+        //returns a list of active users, linked with their mac & IP addresses
         return userList;
+    }
+
+    public void setControlTrue(){
+        control.setTrue();
     }
 }
