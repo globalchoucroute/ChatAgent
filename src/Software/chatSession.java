@@ -7,11 +7,13 @@ import java.io.PrintWriter;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Observable;
 
 
 public class chatSession {
 
     //Attributes
+
     String[][] messageList = new String[2][];
     public ArrayList messages;
     public static int index = 0;
