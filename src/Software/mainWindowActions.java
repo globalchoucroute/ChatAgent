@@ -1,10 +1,14 @@
 package Software;
 
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
+import Session.session;
 
 import GUI.chatWindow;
 
@@ -88,6 +92,7 @@ public class mainWindowActions {
                             otherUser = userList.getUserByName(theirUsername);
                             System.out.println("The client needs to send to : "+otherUser.getIPAddress() + "\nPort : " + port);
                             new chatWindow(username, theirUsername, new chatSession(port, otherUser, false));
+                            //new session(username, otherUser, port, false);
                             break;
                         case "bye":
                             //TODO : Bye case for the message treatment
@@ -165,11 +170,21 @@ public class mainWindowActions {
             DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
             d.send(outPacket);
             return new chatSession(port, otherUserData, true);
-        } catch (SocketException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
-        } catch (Exception r){
-            r.printStackTrace();
+        }
+    }
+
+    public session beginChatSession(String username, int port, userData otherUserData, DatagramSocket d){
+        try {
+            String msg = username + " begin "+ port;
+            System.out.println("beginSession message sent :" + msg);
+            DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
+            d.send(outPacket);
+            return new session(username, otherUserData, port,true);
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
