@@ -15,6 +15,10 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class session extends JFrame {
 
@@ -35,6 +39,8 @@ public class session extends JFrame {
         super();
         otherUserData = otherUser;
         String otherUsername = otherUser.getUsername();
+        String path = "conversationData/" + otherUser.getMacAddress() + "json";
+        messagesFile = new File(path);
 
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
@@ -129,8 +135,38 @@ public class session extends JFrame {
         //*****************************************************
         // THIS IS THE PART CONCERNING THE MESSAGE FETCH
         //*****************************************************
-        if (!messagesFile.exists()){
+        if (!messagesFile.exists()) {
+            PrintWriter writer;
+            try {
+                String filename = otherUserData.getMacAddress() + ".json";
+                writer = new PrintWriter(filename, "UTF-8");
+            } catch (Exception e){
+                System.out.println("Error while creating the json file");
+                e.printStackTrace();
+            }
+        }
+        else if (messagesFile.exists() && !messagesFile.isDirectory()){
+            JSONArray a;
+            try {
+                JSONParser parser = new JSONParser();
+                a = (JSONArray) parser.parse(new FileReader(messagesFile));
 
+            } catch (Exception e) {
+                System.out.println("Error. Could not find the message file");
+                e.printStackTrace();
+                a = null;
+            }
+            for (Object o : a){
+                JSONObject messageData = (JSONObject) o;
+                String message = (String) messageData.get("message");
+                String isMe = (String) messageData.get("flag");
+                if (isMe.equals("1")){
+                    messageDisplay.append("\n" + username + " : " + message);
+                }
+                else if (isMe.equals("0")){
+                    messageDisplay.append("\n" + otherUsername + " : " + message);
+                }
+            }
         }
     }
 
