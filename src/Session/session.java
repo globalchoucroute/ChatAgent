@@ -1,33 +1,44 @@
 package Session;
 
 import Software.userData;
-
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class session extends JFrame {
 
+    //Attributes for the TCP protocol
     private PrintWriter out;
 
     //Attributes for the UI
     public String username;
+    public userData otherUserData;
     private JTextArea messageDisplay;
     private JTextField text = new JTextField("Write a message...");
+
+    //Attributes for the message fetching
+    public File messagesFile;
 
     //Constructor. Will display the new window and start the reception thread.
     public session(String username, userData otherUser, int port,  boolean isServer){
         super();
+        otherUserData = otherUser;
         String otherUsername = otherUser.getUsername();
 
+        //*****************************************************
+        // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
+        //*****************************************************
         JButton sendButton = new JButton("Send");
         JPanel textAreaPanel = new JPanel();
         messageDisplay = new JTextArea("This is the start of your conversation with " + otherUsername + ".\n");
@@ -79,8 +90,11 @@ public class session extends JFrame {
                 text.setText("");
             }
         });
+        //*****************************************************
 
-
+        //*****************************************************
+        // THIS IS THE PART CONCERNING THE TCP PROTOCOL
+        //*****************************************************
         try {
             Socket connectionSocket;
             if (isServer) {
@@ -110,6 +124,14 @@ public class session extends JFrame {
         }catch (IOException e) {
             e.printStackTrace();
         }
+        //*****************************************************
+
+        //*****************************************************
+        // THIS IS THE PART CONCERNING THE MESSAGE FETCH
+        //*****************************************************
+        if (!messagesFile.exists()){
+
+        }
     }
 
 
@@ -117,4 +139,15 @@ public class session extends JFrame {
         out.println(message);
         System.out.println("Message sent : " + message);
     }
+
+    //Getters/Setters
+    public userData getOtherUserData(){
+        return otherUserData;
+    }
+
+    public String getUsername(){
+        return username;
+    }
+
+
 }

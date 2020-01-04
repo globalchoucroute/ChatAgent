@@ -27,7 +27,6 @@ public class userList {
             if (getUser(i).getUsername().equals(name)) {
                 System.out.println("User found in the getUserByName : " + getUser(i).getUsername());
                 return getUser(i);
-
             }
         }
         return null;

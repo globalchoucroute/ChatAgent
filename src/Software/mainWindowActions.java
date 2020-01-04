@@ -176,6 +176,7 @@ public class mainWindowActions {
         }
     }
 
+
     public session beginChatSession(String username, int port, userData otherUserData, DatagramSocket d){
         try {
             String msg = username + " begin "+ port;
@@ -188,6 +189,20 @@ public class mainWindowActions {
             return null;
         }
     }
+
+    public void disconnect(){
+        try{
+            String message = username + " disconnect";
+            DatagramSocket socket = new DatagramSocket();
+            DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), InetAddress.getByName("10.1.255.255"), 3000);
+            socket.setBroadcast(true);
+            socket.send(outPacket);
+        } catch (Exception e){
+            System.out.println("Error while sending the disconnect message");
+            e.printStackTrace();
+        }
+    }
+
 
     public void changeUsername(String usr){
         if (checkUsername(usr)){
