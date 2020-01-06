@@ -65,6 +65,7 @@ public class userList {
     public void deleteElement(userData userData){
         if (list.contains(userData)){
             list.remove(list.indexOf(userData));
+            GUIcontactList.deleteContact(userData);
         }
     }
 

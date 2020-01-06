@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import Software.connection;
+import Software.sessionTable;
 import Software.userList;
 
 public class connectionWindow extends JFrame {
@@ -33,7 +34,7 @@ public class connectionWindow extends JFrame {
                      if (username != null){
                          if(connection.checkUsername(username)) {
                              userList userList = connection.sendHello(username);
-                             mainWindow mainWindow = new mainWindow(username, userList);
+                             new mainWindow(username, userList, new sessionTable());
                              setVisible(false);
                              dispose();
                          }
@@ -53,7 +54,7 @@ public class connectionWindow extends JFrame {
                 if (username != null){
                     if(connection.checkUsername(username)){
                         userList userList = connection.sendHello(username);
-                        mainWindow mainWindow = new mainWindow(username, userList);
+                        new mainWindow(username, userList, new sessionTable());
                         setVisible(false);
                         dispose();
                     }

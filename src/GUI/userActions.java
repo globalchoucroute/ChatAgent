@@ -1,6 +1,7 @@
 package GUI;
 
 import Software.mainWindowActions;
+import Software.sessionTable;
 import Software.userData;
 import Software.userList;
 
@@ -18,11 +19,11 @@ public class userActions extends JPanel {
     public String username;
     private static int port = 5000;
 
-    public userActions(JList L, String name, mainWindow parent, userList userList){
+    public userActions(JList L, String name, mainWindow parent, userList userList, sessionTable sessionTable){
         super();
         username = name;
         userName.setText("Logged in as " + name);
-        mainWindowActions mainWindowActions = new mainWindowActions(name, userList);
+        mainWindowActions mainWindowActions = new mainWindowActions(name, userList, sessionTable);
 
         //Starts a session with the selected user when the button is clicked
         JButton startSession = new JButton("Begin chat session");
@@ -33,8 +34,8 @@ public class userActions extends JPanel {
                     //The second argument starts a new UDP session
                     DatagramSocket beginSessionNotifySocket = new DatagramSocket(4999);
                     userData otherUserData = userList.getUserByName((String) L.getSelectedValue());
-                    //mainWindowActions.beginChatSession(username, port, otherUserData, beginSessionNotifySocket);
-                    new chatWindow(username, (String) L.getSelectedValue(), mainWindowActions.beginSession(username, port, otherUserData, beginSessionNotifySocket));
+                    mainWindowActions.beginChatSession(username, port, otherUserData, beginSessionNotifySocket, sessionTable);
+                    //new chatWindow(username, (String) L.getSelectedValue(), mainWindowActions.beginSession(username, port, otherUserData, beginSessionNotifySocket));
                     beginSessionNotifySocket.close();
                     port++;
                 } catch (Exception ex) {

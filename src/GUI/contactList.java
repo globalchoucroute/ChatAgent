@@ -50,6 +50,7 @@ public class contactList extends JPanel {
         return listModel;
     }
 
+    public void deleteContact(userData userData) { listModel.removeElement(userData.getUsername()); }
     public void addContact(userData userData){
         listModel.addElement(userData.getUsername());
     }
