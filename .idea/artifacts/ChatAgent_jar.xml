@@ -2,8 +2,13 @@
   <artifact type="jar" name="ChatAgent:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/ChatAgent_jar</output-path>
     <root id="archive" name="ChatAgent.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/m/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="ChatAgent" />
       <element id="library" level="project" name="java" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/jsonJar/json-simple-1.1.jar" path-in-jar="/" />
+      <element id="artifact" artifact-name="json-simple-1_1_jar" />
     </root>
   </artifact>
 </component>

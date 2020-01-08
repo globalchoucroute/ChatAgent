@@ -85,7 +85,8 @@ public class connection {
         try {
             //Retrieving the MAC address
             ip = Inet4Address.getLocalHost();
-            NetworkInterface network = NetworkInterface.getByName("eth0");
+            //NetworkInterface network = NetworkInterface.getByName("eth0");
+            NetworkInterface network = NetworkInterface.getByName("eth4");
             Enumeration<InetAddress> addresses = network.getInetAddresses();
             while (addresses.hasMoreElements()){
                 InetAddress address = addresses.nextElement();

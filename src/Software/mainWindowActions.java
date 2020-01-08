@@ -1,10 +1,7 @@
 package Software;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.io.IOException;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Enumeration;
@@ -18,10 +15,6 @@ public class mainWindowActions {
     protected String username;
     public userList contactList;
 
-    //Control class for the checkUsername shared boolean
-    class Control {
-        public volatile boolean unique = true;
-    }
     final connection.Control control = new connection.Control();
 
     //Constructor
@@ -100,8 +93,12 @@ public class mainWindowActions {
                                 System.out.println("Session began on client's side with port : " + port);
                                 break;
                             case "disconnect":
-                                session currentSession = sessionTable.getSessionByName(theirUsername);
-                                currentSession.closeSession();
+                                //session currentSession = sessionTable.getSessionByName(theirUsername);
+                                sessionTable.closeSession(theirUsername);
+                                System.out.println("print random");
+                                //System.out.println("Going to close session with " + currentSession.otherUserData.getUsername());
+                                //currentSession.closeSession();
+                                //System.out.println("Finished closing session with " + currentSession.otherUserData.getUsername());
                                 break;
                             case "bye":
                                 System.out.println("Received the disconnect message");
@@ -116,7 +113,8 @@ public class mainWindowActions {
                                     } else {
                                         //Retrieving the MAC address
                                         InetAddress ip = InetAddress.getLocalHost();
-                                        NetworkInterface network = NetworkInterface.getByName("eth0");
+                                        //NetworkInterface network = NetworkInterface.getByName("eth0");
+                                        NetworkInterface network = NetworkInterface.getByName("eth4");
                                         Enumeration<InetAddress> addresses = network.getInetAddresses();
                                         while (addresses.hasMoreElements()) {
                                             InetAddress currentAddress = addresses.nextElement();
@@ -151,8 +149,15 @@ public class mainWindowActions {
                                         System.out.println("New user added : " + messageData[0]);
                                         break;
                                     }
-                                } catch (Exception e) {
-                                    System.out.println("Could not send the message");
+                                } catch (SocketException se){
+                                    System.out.println("Error while setting up the recvHelloSocket");
+                                    se.printStackTrace();
+                                } catch (UnknownHostException he){
+                                    System.out.println("Unknown host for the recvHello message");
+                                    he.printStackTrace();
+                                } catch (IOException ie){
+                                    System.out.println("Error while sending the message");
+                                    ie.printStackTrace();
                                 }
                                 break;
                         }
