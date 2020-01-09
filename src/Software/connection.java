@@ -1,5 +1,9 @@
 package Software;
 
+import javax.xml.crypto.Data;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Arrays;
 import java.util.Date;
@@ -83,6 +87,7 @@ public class connection {
         Timer timer;
 
         try {
+            //TODO : set up the mac, ip address properly
             //Retrieving the MAC address
             ip = Inet4Address.getLocalHost();
             //NetworkInterface network = NetworkInterface.getByName("eth0");
@@ -106,14 +111,40 @@ public class connection {
             }
             String macs = sb.toString();
 
+            //Set up for the serialized message send
+            DatagramSocket socket = new DatagramSocket();
+            ByteArrayOutputStream outByte = null;
+
+            //Send the serialized message to other listening users (listening is made in a separate thread on port 3000)
+            try {
+                outByte = new ByteArrayOutputStream();
+                byte[] objectSerialized = null;
+                ObjectOutputStream objOut = new ObjectOutputStream(outByte);
+                objOut.writeObject(new systemMessage("hello", new userData(usr, macs, ips), 0));
+                objectSerialized = outByte.toByteArray();
+                DatagramPacket outPacket = new DatagramPacket(objectSerialized, objectSerialized.length, InetAddress.getByName("255.255.255.255"), 3000);
+                try {
+                    socket.send(outPacket);
+                    outByte.close();
+                    objOut.close();
+                } catch (IOException io) {
+                    System.out.println("Error while setting up the socket for the sendHello");
+                    io.printStackTrace();
+                }
+            } catch (UnknownHostException uhe) {
+                System.out.println("Could not find the host");
+                uhe.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Error while sending the message");
+                e.printStackTrace();
+            }
 
             //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
             String message = usr + " " + macs + " " + ips;
             System.out.println("sendHello message : "+message);
 
             //Sending the sendHello package with username and mac address in broadcast mode
-            DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 3000);
+            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("255.255.255.255"), 3000);
             socket.setBroadcast(true);
             socket.send(outPacket);
 

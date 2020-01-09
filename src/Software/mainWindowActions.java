@@ -1,7 +1,18 @@
 package Software;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.*;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Enumeration;
@@ -13,7 +24,6 @@ public class mainWindowActions {
 
     //Attributes
     protected String username;
-    public userList contactList;
 
     final connection.Control control = new connection.Control();
 
@@ -25,22 +35,22 @@ public class mainWindowActions {
                 DatagramSocket serverSocket = new DatagramSocket(3000);
 
                 //This is the message we receive through port 3000
-                String message;
-
-                //Contains the different values of the message
-                String[] messageData;
-
+                systemMessage receivedSystemMessage;
 
                 int port;
                 InetAddress address;
                 String theirUsername;
                 String answerMessage;
                 userData otherUser;
-                while(true) {
+                String instruction;
+                ByteArrayOutputStream outByte;
+                byte[] objectSerialized;
+
+                while (true) {
 
                     //Debugging
                     System.out.println("List of online users as it is during the message reception thread");
-                    for (int i = 0; i<userList.getLength(); i++){
+                    for (int i = 0; i < userList.getLength(); i++) {
                         System.out.println("*************************************");
                         System.out.println("User " + i + " :");
                         System.out.println("Username : " + userList.getUser(i).getUsername());
@@ -57,21 +67,20 @@ public class mainWindowActions {
                     System.out.println("Waiting for a packet reception");
                     //Recover the datagram sent by client
                     serverSocket.receive(packet);
-                    message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
-                    System.out.println("Received message : " + message);
+                    ByteArrayInputStream inStream = new ByteArrayInputStream(packet.getData());
+                    ObjectInput inObj = new ObjectInputStream(inStream);
+                    Object systemMsg = inObj.readObject();
+                    if (systemMsg.getClass().toString().equals("class systemMessage")) {
+                        receivedSystemMessage = (systemMessage) systemMsg;
 
-                    //Setup the variables for treatment
-                    address = packet.getAddress();
-                    messageData = message.split(" ");
-                    theirUsername = messageData[0];
-                    Character index = theirUsername.charAt(0);
-                    if (index.equals("0")){ System.out.println("Received a non treatable message"); }
+                        //Set up the useful variables for later use
+                        instruction = receivedSystemMessage.instruction;
+                        otherUser = receivedSystemMessage.userData;
+                        theirUsername = otherUser.getUsername();
+                        address = InetAddress.getByName(receivedSystemMessage.userData.getIPAddress());
+                        port = receivedSystemMessage.port;
 
-                    else {//Start the message treatment
-                        System.out.println("messageTreatment running");
-                        System.out.println("Username : " + messageData[0] + "\nInstruction : " + messageData[1]);
-
-                        switch (messageData[1]) {
+                        switch (instruction) {
                             case "check":
                                 if (theirUsername.equals(username)) {
                                     try {
@@ -84,7 +93,6 @@ public class mainWindowActions {
                                 }
                                 break;
                             case "begin":
-                                port = Integer.parseInt(messageData[2]);
                                 System.out.println("Received the begin message with username  = " + theirUsername + " and port = " + port);
                                 otherUser = userList.getUserByName(theirUsername);
                                 System.out.println("The client needs to send to : " + otherUser.getIPAddress() + "\nPort : " + port);
@@ -105,69 +113,85 @@ public class mainWindowActions {
                                 otherUser = userList.getUserByName(theirUsername);
                                 userList.deleteElement(otherUser);
                                 break;
-                            default:
+                            case "change":
+                                userList.modifyUsername(otherUser.getMacAddress(), theirUsername);
+                            case "hello":
                                 try {
-                                    //Check if the user already exists in the list
-                                    if (userList.exists(messageData[1])) {
-                                        userList.modifyUsername(messageData[1], theirUsername);
-                                    } else {
-                                        //Retrieving the MAC address
-                                        InetAddress ip = InetAddress.getLocalHost();
-                                        //NetworkInterface network = NetworkInterface.getByName("eth0");
-                                        NetworkInterface network = NetworkInterface.getByName("eth4");
-                                        Enumeration<InetAddress> addresses = network.getInetAddresses();
-                                        while (addresses.hasMoreElements()) {
-                                            InetAddress currentAddress = addresses.nextElement();
-                                            if (currentAddress instanceof Inet4Address && !currentAddress.isLoopbackAddress()) {
-                                                ip = currentAddress;
-                                            }
+                                    //Retrieving the MAC address
+                                    InetAddress ip = InetAddress.getLocalHost();
+                                    //NetworkInterface network = NetworkInterface.getByName("eth0");
+                                    NetworkInterface network = NetworkInterface.getByName("eth4");
+                                    Enumeration<InetAddress> addresses = network.getInetAddresses();
+                                    while (addresses.hasMoreElements()) {
+                                        InetAddress currentAddress = addresses.nextElement();
+                                        if (currentAddress instanceof Inet4Address && !currentAddress.isLoopbackAddress()) {
+                                            ip = currentAddress;
                                         }
-                                        byte[] mac = network.getHardwareAddress();
-
-                                        //Formatting the message for a clean display
-                                        String ips = ip.toString().substring(1);
-                                        StringBuilder sb = new StringBuilder(18);
-                                        for (byte b : mac) {
-                                            if (sb.length() > 0)
-                                                sb.append(':');
-                                            sb.append(String.format("%02x", b));
-                                        }
-                                        String macs = sb.toString();
-
-                                        //Message format for the sendHello = "jean-michel 00:1B:44:11:3A:B7 192.168.0.1"
-                                        answerMessage = username + " " + macs + " " + ips;
-                                        System.out.println("RecvHello message : " + answerMessage);
-
-                                        //Returning a packet with our info, so that the new user can create their active list
-                                        DatagramSocket socket = new DatagramSocket();
-                                        DatagramPacket outPacket = new DatagramPacket(answerMessage.getBytes(), answerMessage.length(), address, 2002);
-                                        socket.send(outPacket);
-                                        socket.close();
-
-                                        //Update the activeList table
-                                        userList.addElement(new userData(messageData[0], messageData[1], messageData[2]));
-                                        System.out.println("New user added : " + messageData[0]);
-                                        break;
                                     }
-                                } catch (SocketException se){
+                                    byte[] mac = network.getHardwareAddress();
+
+                                    //Formatting the message for a clean display
+                                    String ips = ip.toString().substring(1);
+                                    StringBuilder sb = new StringBuilder(18);
+                                    for (byte b : mac) {
+                                        if (sb.length() > 0)
+                                            sb.append(':');
+                                        sb.append(String.format("%02x", b));
+                                    }
+                                    String macs = sb.toString();
+
+                                    try {
+                                        DatagramSocket socket = new DatagramSocket();
+                                        outByte = new ByteArrayOutputStream();
+                                        ObjectOutputStream objOut = new ObjectOutputStream(outByte);
+                                        objOut.writeObject(new systemMessage("hello", new userData(username, macs, ips), 0));
+                                        objectSerialized = outByte.toByteArray();
+                                        DatagramPacket outPacket = new DatagramPacket(objectSerialized, objectSerialized.length, address, 2002);
+                                        try {
+                                            socket.send(outPacket);
+                                            outByte.close();
+                                            objOut.close();
+                                            socket.close();
+                                        } catch (IOException io) {
+                                            System.out.println("Error while setting up the socket for the sendHello");
+                                            io.printStackTrace();
+                                        }
+                                    } catch (UnknownHostException uhe) {
+                                        System.out.println("Could not find the host");
+                                        uhe.printStackTrace();
+                                    } catch (IOException e) {
+                                        System.out.println("Error while sending the message");
+                                        e.printStackTrace();
+                                    }
+
+                                    //Update the activeList table
+                                    userList.addElement(otherUser);
+
+                                    System.out.println("New user added : " + otherUser.getUsername());
+                                    break;
+
+                                } catch (SocketException se) {
                                     System.out.println("Error while setting up the recvHelloSocket");
                                     se.printStackTrace();
-                                } catch (UnknownHostException he){
+                                } catch (UnknownHostException he) {
                                     System.out.println("Unknown host for the recvHello message");
                                     he.printStackTrace();
-                                } catch (IOException ie){
-                                    System.out.println("Error while sending the message");
-                                    ie.printStackTrace();
                                 }
+                                break;
+                            default:
                                 break;
                         }
                     }
                 }
-            } catch (Exception e){
-                System.out.println("Error while setting up the reception socket (mainWindowActions)");
-                e.printStackTrace();
+            }  catch (IOException io) {
+                System.out.println("Error while setting up the socket for the message recovery");
+                io.printStackTrace();
+            } catch (ClassNotFoundException cnfe) {
+                System.out.println("Error : class was not found");
+                cnfe.printStackTrace();
             }
         });
+
         this.username = username;
         messageReception.start();
 

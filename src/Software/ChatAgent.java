@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class ChatAgent {
-    final static String LOOKANDFEEL = "System";
+    final static String LOOKANDFEEL = "GTK+";
     private static void initLookAndFeel() {
 
         // Swing allows you to specify which look and feel your program uses--Java,

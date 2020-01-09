@@ -9,7 +9,6 @@ public class message implements Serializable {
     public String content;
     public Timestamp timestamp;
     public File image;
-    public String instruction;
 
     public message(){
 

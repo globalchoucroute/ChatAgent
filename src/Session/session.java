@@ -187,29 +187,32 @@ public class session extends JFrame {
                 int key = e.getKeyCode();
                 if (key == KeyEvent.VK_ENTER) {
                     if (text.getText() != null){
-                        try {
-                            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                            sendMessage(text.getText());
-                            messageDisplay.append("\n" + username + " : " + text.getText());
-                        } catch (Exception ex) {
-                            messageDisplay.append("\nSorry, there was an error while trying to send the message.");
-                            System.out.println("Failed to send the message");
+                        if (text.getText() != "") {
+                            try {
+                                sendMessage(text.getText());
+                                messageDisplay.append("\n" + username + " : " + text.getText());
+                            } catch (Exception ex) {
+                                messageDisplay.append("\nSorry, there was an error while trying to send the message.");
+                                System.out.println("Failed to send the message");
+                            }
+                            text.setText("");
                         }
-                        text.setText("");
                     }
                 }
             }
         });
         sendButton.addActionListener(e -> {
             if (text.getText() != null){
-                try {
-                    sendMessage(text.getText());
-                    messageDisplay.append("\n" + username + " : " + text.getText());
-                } catch (Exception ex) {
-                    messageDisplay.append("\nSorry, there was an error while trying to send the message.");
-                    System.out.println("Failed to send the message");
+                if (text.getText() != "") {
+                    try {
+                        sendMessage(text.getText());
+                        messageDisplay.append("\n" + username + " : " + text.getText());
+                    } catch (Exception ex) {
+                        messageDisplay.append("\nSorry, there was an error while trying to send the message.");
+                        System.out.println("Failed to send the message");
+                    }
+                    text.setText("");
                 }
-                text.setText("");
             }
         });
 
@@ -239,11 +242,15 @@ public class session extends JFrame {
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         messageDisplay.append("\n" + otherUsername + " : " + message);
                         System.out.println("Message received : " + message);
-                        JSONObject jsonMessage = new JSONObject();
-                        jsonMessage.put("message",message);
-                        jsonMessage.put("timestamp",timestamp);
-                        jsonMessage.put("flag", 0);
-                        jsonObject.put("messagedata", jsonMessage);
+                        if (message.equals("null")){ }
+                        else if (message.equals("")){ }
+                        else {
+                            JSONObject jsonMessage = new JSONObject();
+                            jsonMessage.put("message", message);
+                            jsonMessage.put("timestamp", timestamp);
+                            jsonMessage.put("flag", 0);
+                            jsonObject.put("messagedata", jsonMessage);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
