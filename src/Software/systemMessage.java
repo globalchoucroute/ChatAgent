@@ -9,8 +9,8 @@ public class systemMessage implements Serializable {
     public userData userData;
     public int port;
 
-    public systemMessage(String i, userData u, int p){
-        instruction=i;
+    public systemMessage(String instruction, userData u, int p){
+        this.instruction=instruction;
         userData=u;
         port=p;
     }

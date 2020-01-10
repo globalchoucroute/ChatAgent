@@ -13,6 +13,9 @@ public class connection {
 
     //Attributes
     public userList userList = new userList();
+    public String macs;
+    public String ips;
+    public String username;
 
     //Control class for the checkUsername shared boolean
     static class Control {
@@ -28,20 +31,51 @@ public class connection {
 
 
     public connection (){
+        InetAddress ip;
+        this.macs = "";
+        this.ips = "";
+        try {
+            ip = InetAddress.getLocalHost();
+
+            //NetworkInterface network = NetworkInterface.getByName("eth0");
+            NetworkInterface network = NetworkInterface.getByName("eth4");
+            Enumeration<InetAddress> addresses = network.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress address = addresses.nextElement();
+                if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+                    ip = address;
+                }
+            }
+
+            byte[] mac = network.getHardwareAddress();
+
+            //Formatting the message for a clean display
+            StringBuilder sb = new StringBuilder(18);
+            for (byte b : mac) {
+                if (sb.length() > 0)
+                    sb.append(':');
+                sb.append(String.format("%02x", b));
+            }
+
+            this.macs = sb.toString();
+            this.ips = ip.toString().substring(1);
+
+        } catch (UnknownHostException uhe) {
+            System.out.println("Could not find the host");
+            uhe.printStackTrace();
+        } catch (SocketException se) {
+            se.printStackTrace();
+        }
+
     }
 
     //Methods
     public boolean checkUsername(String usr){
         try {
-            //Message format for the username check : "jean-michel|check"
-            String message = usr + " check";
-            System.out.println("usernameCheck message : "+ message);
 
-            //Creating the server socket for potential reception
-            DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 3000);
-            socket.setBroadcast(true);
-            socket.send(outPacket);
+            //Send the message via the systemMessageSender
+            systemMessageSender systemMessageSender = new systemMessageSender();
+            systemMessageSender.sendSystemMessage(new systemMessage("check", new userData(usr, macs, ips), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
 
             //Start value for the timer
             long startTime = System.currentTimeMillis();
@@ -83,70 +117,14 @@ public class connection {
     }
 
     public userList sendHello(String usr){
-        InetAddress ip;
-        Timer timer;
-
         try {
             //TODO : set up the mac, ip address properly
-            //Retrieving the MAC address
-            ip = Inet4Address.getLocalHost();
-            //NetworkInterface network = NetworkInterface.getByName("eth0");
-            NetworkInterface network = NetworkInterface.getByName("eth4");
-            Enumeration<InetAddress> addresses = network.getInetAddresses();
-            while (addresses.hasMoreElements()){
-                InetAddress address = addresses.nextElement();
-                if (address instanceof Inet4Address && !address.isLoopbackAddress()){
-                    ip = address;
-                }
-            }
-            byte[] mac = network.getHardwareAddress();
-
-            //Formatting the message for a clean display
-            String ips = ip.toString().substring(1);
-            StringBuilder sb = new StringBuilder(18);
-            for (byte b : mac) {
-                if (sb.length() > 0)
-                    sb.append(':');
-                sb.append(String.format("%02x", b));
-            }
-            String macs = sb.toString();
-
             //Set up for the serialized message send
             DatagramSocket socket = new DatagramSocket();
-            ByteArrayOutputStream outByte = null;
 
-            //Send the serialized message to other listening users (listening is made in a separate thread on port 3000)
-            try {
-                outByte = new ByteArrayOutputStream();
-                byte[] objectSerialized = null;
-                ObjectOutputStream objOut = new ObjectOutputStream(outByte);
-                objOut.writeObject(new systemMessage("hello", new userData(usr, macs, ips), 0));
-                objectSerialized = outByte.toByteArray();
-                DatagramPacket outPacket = new DatagramPacket(objectSerialized, objectSerialized.length, InetAddress.getByName("255.255.255.255"), 3000);
-                try {
-                    socket.send(outPacket);
-                    outByte.close();
-                    objOut.close();
-                } catch (IOException io) {
-                    System.out.println("Error while setting up the socket for the sendHello");
-                    io.printStackTrace();
-                }
-            } catch (UnknownHostException uhe) {
-                System.out.println("Could not find the host");
-                uhe.printStackTrace();
-            } catch (IOException e) {
-                System.out.println("Error while sending the message");
-                e.printStackTrace();
-            }
-
-            //Message format for the sendHello = "jean-michel|00:1B:44:11:3A:B7|192.168.0.1"
-            String message = usr + " " + macs + " " + ips;
-            System.out.println("sendHello message : "+message);
-
-            //Sending the sendHello package with username and mac address in broadcast mode
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("255.255.255.255"), 3000);
-            socket.setBroadcast(true);
-            socket.send(outPacket);
+            //Send the message via the systemMessageSender
+            systemMessageSender systemMessageSender = new systemMessageSender();
+            systemMessageSender.sendSystemMessage(new systemMessage("hello", new userData(usr, macs, ips), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
 
             //Start value for the timer
             long startTime = System.currentTimeMillis();
@@ -195,10 +173,14 @@ public class connection {
         } catch( Exception e){
             System.out.println("getLocalhost failed");
         }
+        this.username = usr;
         //returns a list of active users, linked with their mac & IP addresses
         return userList;
     }
 
+    public userData getPersonalUserData(){
+        return new userData(username, macs, ips);
+    }
     public void setControlTrue(){
         control.setTrue();
     }

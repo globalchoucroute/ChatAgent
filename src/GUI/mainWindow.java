@@ -1,7 +1,6 @@
 package GUI;
 
-import Software.sessionTable;
-import Software.userList;
+import Software.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -22,9 +21,9 @@ public class mainWindow extends JFrame {
     userActions userActions;
     public String username;
     //Constructor
-    public mainWindow(String userName, userList usersList, sessionTable sessionTable){
+    public mainWindow(userData myself, userList usersList, sessionTable sessionTable){
         super("Chat Agent");
-        username = userName;
+        username = myself.getUsername();
         this.contactList = new contactList(usersList);
         this.userActions = new userActions(contactList.contacts, username, this, usersList, sessionTable);
 
@@ -43,23 +42,10 @@ public class mainWindow extends JFrame {
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == 0){
                     try {
-                        DatagramSocket dcSocket = new DatagramSocket(10000);
-                        String msg = username + " bye";
-                        DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName("10.1.255.255"), 3000);
-                        dcSocket.setBroadcast(true);
-                        dcSocket.send(outPacket);
-                        System.out.println("Bye message sent : " + msg);
-                        dcSocket.close();
-                        System.exit(0);
-                    } catch (SocketException se){
-                        System.out.println("Error while setting up the dcSocket");
-                        se.printStackTrace();
-                    } catch (UnknownHostException he){
-                        System.out.println("Unknown host for the disconnect message");
-                        he.printStackTrace();
-                    } catch (IOException ie){
-                        System.out.println("Error while sending the message");
-                        ie.printStackTrace();
+                        systemMessageSender systemMessageSender = new systemMessageSender();
+                        systemMessageSender.sendSystemMessage(new systemMessage("bye", myself, 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+                    } catch (UnknownHostException uhe) {
+                        uhe.printStackTrace();
                     }
                 }
             }

@@ -19,11 +19,11 @@ public class userActions extends JPanel {
     public String username;
     private static int port = 5000;
 
-    public userActions(JList L, String name, mainWindow parent, userList userList, sessionTable sessionTable){
+    public userActions(JList L, userData myself, mainWindow parent, userList userList, sessionTable sessionTable){
         super();
-        username = name;
-        userName.setText("Logged in as " + name);
-        mainWindowActions mainWindowActions = new mainWindowActions(name, userList, sessionTable);
+        username = myself.getUsername();
+        userName.setText("Logged in as " + username);
+        mainWindowActions mainWindowActions = new mainWindowActions(myself, userList, sessionTable);
 
         //Starts a session with the selected user when the button is clicked
         JButton startSession = new JButton("Begin chat session");

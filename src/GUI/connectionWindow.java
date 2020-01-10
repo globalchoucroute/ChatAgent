@@ -34,7 +34,7 @@ public class connectionWindow extends JFrame {
                      if (username != null){
                          if(connection.checkUsername(username)) {
                              userList userList = connection.sendHello(username);
-                             new mainWindow(username, userList, new sessionTable());
+                             new mainWindow(connection.getPersonalUserData(), userList, new sessionTable());
                              setVisible(false);
                              dispose();
                          }
@@ -54,7 +54,7 @@ public class connectionWindow extends JFrame {
                 if (username != null){
                     if(connection.checkUsername(username)){
                         userList userList = connection.sendHello(username);
-                        new mainWindow(username, userList, new sessionTable());
+                        new mainWindow(connection.getPersonalUserData(), userList, new sessionTable());
                         setVisible(false);
                         dispose();
                     }

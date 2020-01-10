@@ -24,12 +24,17 @@ public class mainWindowActions {
 
     //Attributes
     protected String username;
-
+    public userData myself;
     final connection.Control control = new connection.Control();
 
     //Constructor
-    public mainWindowActions(String username, userList userList, sessionTable sessionTable) {
+    public mainWindowActions(userData myself, userList userList, sessionTable sessionTable) {
 
+        this.myself = myself;
+        //This thread is meant to listen to system messages, such as :
+        //  - A user wants to start a chat session
+        //  - A user disconnects from the chat system
+        // And so on...
         Thread messageReception = new Thread(() -> {
             try {
                 DatagramSocket serverSocket = new DatagramSocket(3000);
@@ -117,66 +122,33 @@ public class mainWindowActions {
                                 userList.modifyUsername(otherUser.getMacAddress(), theirUsername);
                             case "hello":
                                 try {
-                                    //Retrieving the MAC address
-                                    InetAddress ip = InetAddress.getLocalHost();
-                                    //NetworkInterface network = NetworkInterface.getByName("eth0");
-                                    NetworkInterface network = NetworkInterface.getByName("eth4");
-                                    Enumeration<InetAddress> addresses = network.getInetAddresses();
-                                    while (addresses.hasMoreElements()) {
-                                        InetAddress currentAddress = addresses.nextElement();
-                                        if (currentAddress instanceof Inet4Address && !currentAddress.isLoopbackAddress()) {
-                                            ip = currentAddress;
-                                        }
-                                    }
-                                    byte[] mac = network.getHardwareAddress();
-
-                                    //Formatting the message for a clean display
-                                    String ips = ip.toString().substring(1);
-                                    StringBuilder sb = new StringBuilder(18);
-                                    for (byte b : mac) {
-                                        if (sb.length() > 0)
-                                            sb.append(':');
-                                        sb.append(String.format("%02x", b));
-                                    }
-                                    String macs = sb.toString();
-
+                                    DatagramSocket socket = new DatagramSocket();
+                                    outByte = new ByteArrayOutputStream();
+                                    ObjectOutputStream objOut = new ObjectOutputStream(outByte);
+                                    objOut.writeObject(new systemMessage("hello", this.myself, 0));
+                                    objectSerialized = outByte.toByteArray();
+                                    DatagramPacket outPacket = new DatagramPacket(objectSerialized, objectSerialized.length, address, 2002);
                                     try {
-                                        DatagramSocket socket = new DatagramSocket();
-                                        outByte = new ByteArrayOutputStream();
-                                        ObjectOutputStream objOut = new ObjectOutputStream(outByte);
-                                        objOut.writeObject(new systemMessage("hello", new userData(username, macs, ips), 0));
-                                        objectSerialized = outByte.toByteArray();
-                                        DatagramPacket outPacket = new DatagramPacket(objectSerialized, objectSerialized.length, address, 2002);
-                                        try {
-                                            socket.send(outPacket);
-                                            outByte.close();
-                                            objOut.close();
-                                            socket.close();
-                                        } catch (IOException io) {
-                                            System.out.println("Error while setting up the socket for the sendHello");
-                                            io.printStackTrace();
-                                        }
-                                    } catch (UnknownHostException uhe) {
-                                        System.out.println("Could not find the host");
-                                        uhe.printStackTrace();
-                                    } catch (IOException e) {
-                                        System.out.println("Error while sending the message");
-                                        e.printStackTrace();
+                                        socket.send(outPacket);
+                                        outByte.close();
+                                        objOut.close();
+                                        socket.close();
+                                    } catch (IOException io) {
+                                        System.out.println("Error while setting up the socket for the sendHello");
+                                        io.printStackTrace();
                                     }
-
-                                    //Update the activeList table
-                                    userList.addElement(otherUser);
-
-                                    System.out.println("New user added : " + otherUser.getUsername());
-                                    break;
-
-                                } catch (SocketException se) {
-                                    System.out.println("Error while setting up the recvHelloSocket");
-                                    se.printStackTrace();
-                                } catch (UnknownHostException he) {
-                                    System.out.println("Unknown host for the recvHello message");
-                                    he.printStackTrace();
+                                } catch (UnknownHostException uhe) {
+                                    System.out.println("Could not find the host");
+                                    uhe.printStackTrace();
+                                } catch (IOException e) {
+                                    System.out.println("Error while sending the message");
+                                    e.printStackTrace();
                                 }
+
+                                //Update the activeList table
+                                userList.addElement(otherUser);
+
+                                System.out.println("New user added : " + otherUser.getUsername());
                                 break;
                             default:
                                 break;
@@ -197,21 +169,6 @@ public class mainWindowActions {
 
     }
 
-    //Methods
-    public chatSession beginSession(String usr, int port, userData otherUserData, DatagramSocket d) {
-        try {
-            String msg = usr + " begin "+ port;
-            System.out.println("beginSession message sent :" + msg);
-            DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
-            d.send(outPacket);
-            return new chatSession(port, otherUserData, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
     public session beginChatSession(String username, int port, userData otherUserData, DatagramSocket d, sessionTable sessionTable){
         try {
             String msg = username + " begin "+ port;
@@ -225,19 +182,6 @@ public class mainWindowActions {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    public void disconnect(){
-        try{
-            String message = username + " disconnect";
-            DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), InetAddress.getByName("10.1.255.255"), 3000);
-            socket.setBroadcast(true);
-            socket.send(outPacket);
-        } catch (Exception e){
-            System.out.println("Error while sending the disconnect message");
-            e.printStackTrace();
         }
     }
 
@@ -257,15 +201,10 @@ public class mainWindowActions {
 
     public boolean checkUsername(String usr){
         try {
-            //Message format for the username check : "jean-michel check"
-            String message = usr + " check";
-            System.out.println("usernameCheck message : "+ message);
 
-            //Creating the server socket for potential reception
-            DatagramSocket socket = new DatagramSocket();
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(),message.length(), InetAddress.getByName("10.1.255.255"), 3000);
-            socket.setBroadcast(true);
-            socket.send(outPacket);
+            //Send the message via the systemMessageSender
+            systemMessageSender systemMessageSender = new systemMessageSender();
+            systemMessageSender.sendSystemMessage(new systemMessage("check", new userData(usr, myself.getMacAddress(), myself.getIPAddress()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
 
             //Start value for the timer
             long startTime = System.currentTimeMillis();
