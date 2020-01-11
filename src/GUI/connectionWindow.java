@@ -24,6 +24,7 @@ public class connectionWindow extends JFrame {
         add(userNameField, BorderLayout.CENTER);
         add(connectButton, BorderLayout.SOUTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         connection connection = new connection();
 
         userNameField.addKeyListener(new KeyAdapter() {

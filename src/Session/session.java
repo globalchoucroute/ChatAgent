@@ -1,23 +1,26 @@
 package Session;
 
-import Software.connection;
+import Software.systemMessage;
+import Software.systemMessageSender;
 import Software.userData;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -25,6 +28,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 
 import org.json.simple.JSONArray;
@@ -38,12 +42,12 @@ public class session extends JFrame {
     private PrintWriter out;
 
     //Attributes for the UI
+    private DefaultListModel messageListModel;
     public String username;
-    public userData otherUserData;
+    private userData otherUserData;
     private JTextArea messageDisplay;
     private JTextField text = new JTextField("Write a message...");
     private Socket connectionSocket;
-    private Thread connectionThread;
     private BufferedReader bufferIn;
 
     //Attributes for the message fetching
@@ -64,13 +68,22 @@ public class session extends JFrame {
     final Connected controlConnected = new Connected();
 
     //Constructor. Will display the new window and start the reception thread.
-    public session(String username, userData otherUser, int port,  boolean isServer){
+    public session(userData myself, userData otherUser, int port,  boolean isServer){
         super();
+
+        String correctPathName = "";
+        String mac = otherUser.getMacAddress();
+        for (int i = 0; i<mac.length(); i++){
+            Character current = mac.charAt(i);
+            if (!current.equals(":")) correctPathName += current;
+        }
+        System.out.println("The corrected version of the mac address is : " + correctPathName);
+
         otherUserData = otherUser;
         String otherUsername = otherUser.getUsername();
-        String path = "conversationData/" + otherUser.getMacAddress();
+        String path = "conversationData/" + correctPathName;
         messagesFile = new File(path);
-        String userPath = path + "/" + otherUser.getMacAddress() + ".json";
+        String userPath = path + "/" + correctPathName + ".json";
         messagesJson = new File(userPath);
 
 
@@ -78,12 +91,12 @@ public class session extends JFrame {
         // THIS IS THE PART CONCERNING THE MESSAGE FETCH
         //*****************************************************
         if (!messagesFile.exists()) {
-            messagesFile.mkdir();
+            boolean b = messagesFile.mkdir();
 
             PrintWriter writer;
             try {
-                String filename = otherUserData.getMacAddress() + ".json";
-                writer = new PrintWriter(filename, "UTF-8");
+                String filename = correctPathName + ".json";
+                writer = new PrintWriter(filename, StandardCharsets.UTF_8);
             } catch (Exception e){
                 System.out.println("Error while creating the json file");
                 e.printStackTrace();
@@ -116,6 +129,13 @@ public class session extends JFrame {
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
         //*****************************************************
+
+        //TODO : message display is still absolutely terrible. Might need to fix that
+        messageListModel = new DefaultListModel();
+        JLabel test = new JLabel("oui");
+        messageListModel.addElement(test);
+        JList<JLabel> messageList = new JList<>();
+
         JButton sendButton = new JButton("Send");
         JPanel textAreaPanel = new JPanel();
         messageDisplay = new JTextArea("This is the start of your conversation with " + otherUsername + ".\n");
@@ -148,12 +168,9 @@ public class session extends JFrame {
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == 0){
                     try {
-                        DatagramSocket dcSocket = new DatagramSocket(10000);
-                        String msg = username + " disconnect";
-                        DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
-                        dcSocket.send(outPacket);
-                        System.out.println("Disconnect message sent : " + msg);
-                        dcSocket.close();
+                        systemMessageSender systemMessageSender = new systemMessageSender();
+                        systemMessage systemMessage = new systemMessage("disconnect", myself, 0 );
+                        systemMessageSender.sendSystemMessage(systemMessage, InetAddress.getByName(otherUserData.getIPAddress()), false, 3000);
                         controlConnected.disconnect();
                         System.out.println("Turned the controller to false");
                         connectionSocket.close();
@@ -187,7 +204,7 @@ public class session extends JFrame {
                 int key = e.getKeyCode();
                 if (key == KeyEvent.VK_ENTER) {
                     if (text.getText() != null){
-                        if (text.getText() != "") {
+                        if (!text.getText().equals("")) {
                             try {
                                 sendMessage(text.getText());
                                 messageDisplay.append("\n" + username + " : " + text.getText());
@@ -203,7 +220,7 @@ public class session extends JFrame {
         });
         sendButton.addActionListener(e -> {
             if (text.getText() != null){
-                if (text.getText() != "") {
+                if (!text.getText().equals("")) {
                     try {
                         sendMessage(text.getText());
                         messageDisplay.append("\n" + username + " : " + text.getText());
@@ -230,11 +247,12 @@ public class session extends JFrame {
                 connectionSocket = serverSocket.accept();
                 System.out.println("Message after accept");
             } else {
+                try {Thread.sleep(100);} catch (InterruptedException ie) {ie.printStackTrace();}
                 connectionSocket = new Socket(InetAddress.getByName(otherUser.getIPAddress()), port);
             }
             this.out = new PrintWriter(connectionSocket.getOutputStream(), true);
             //Attributes for the TCP connection and the connection Thread
-            connectionThread = new Thread(() -> {
+            Thread connectionThread = new Thread(() -> {
                 try {
                     bufferIn = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                     while (controlConnected.getConnected()) {
@@ -242,9 +260,7 @@ public class session extends JFrame {
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         messageDisplay.append("\n" + otherUsername + " : " + message);
                         System.out.println("Message received : " + message);
-                        if (message.equals("null")){ }
-                        else if (message.equals("")){ }
-                        else {
+                        if (!message.equals("null") && !message.equals("")) {
                             JSONObject jsonMessage = new JSONObject();
                             jsonMessage.put("message", message);
                             jsonMessage.put("timestamp", timestamp);
@@ -272,10 +288,12 @@ public class session extends JFrame {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         System.out.println("Message sent : " + message);
         JSONObject jsonMessage = new JSONObject();
-        jsonMessage.put("message",message);
-        jsonMessage.put("timestamp",timestamp);
-        jsonMessage.put("flag", 1);
-        jsonObject.put("messagedata", jsonMessage);
+        if (!message.equals("null") && !message.equals("")) {
+            jsonMessage.put("message", message);
+            jsonMessage.put("timestamp", timestamp);
+            jsonMessage.put("flag", 1);
+            jsonObject.put("messagedata", jsonMessage);
+        }
     }
 
     //Getters/Setters
@@ -287,6 +305,28 @@ public class session extends JFrame {
         return username;
     }
 
+    private void addMessage(boolean isMe, String message, String timestamp){
+        JPanel messagePanel = new JPanel();
+        JTextArea messageText = new JTextArea(message);
+        if (isMe){
+            Border border = BorderFactory.createLineBorder(Color.blue);
+            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, timestamp + " - You :");
+            titledBorder.setTitleJustification(TitledBorder.RIGHT);
+            titledBorder.setTitleColor(Color.blue);
+        }
+        else {
+            Border border = BorderFactory.createLineBorder(Color.red);
+            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, timestamp + " - " + otherUserData.getUsername() + " :");
+            titledBorder.setTitleJustification(TitledBorder.LEFT);
+            titledBorder.setTitleColor(Color.red);
+        }
+        messagePanel.add(messageText);
+        messageText.setLineWrap(true);
+        messageText.setWrapStyleWord(true);
+        messageText.setEditable(false);
+
+
+    }
     public void closeSession(){
         try {
             System.out.println("Entered the closeSession method...");

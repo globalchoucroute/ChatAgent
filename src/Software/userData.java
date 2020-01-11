@@ -1,6 +1,10 @@
 package Software;
 
-public class userData {
+import java.io.Serializable;
+
+public class userData implements Serializable {
+    private static final long serialVersionUID = 3334L;
+
     public String username;
     public String macAddress;
     public String IPAddress;

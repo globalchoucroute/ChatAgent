@@ -25,11 +25,11 @@ public class mainWindowActions {
     //Attributes
     protected String username;
     public userData myself;
-    final connection.Control control = new connection.Control();
+    protected userList userList;
 
     //Constructor
-    public mainWindowActions(userData myself, userList userList, sessionTable sessionTable) {
-
+    public mainWindowActions(userData myself, userList u, sessionTable sessionTable) {
+        userList = u;
         this.myself = myself;
         //This thread is meant to listen to system messages, such as :
         //  - A user wants to start a chat session
@@ -45,7 +45,6 @@ public class mainWindowActions {
                 int port;
                 InetAddress address;
                 String theirUsername;
-                String answerMessage;
                 userData otherUser;
                 String instruction;
                 ByteArrayOutputStream outByte;
@@ -101,17 +100,11 @@ public class mainWindowActions {
                                 System.out.println("Received the begin message with username  = " + theirUsername + " and port = " + port);
                                 otherUser = userList.getUserByName(theirUsername);
                                 System.out.println("The client needs to send to : " + otherUser.getIPAddress() + "\nPort : " + port);
-                                //new chatWindow(username, theirUsername, new chatSession(port, otherUser, false));
-                                sessionTable.addSession(new session(username, otherUser, port, false));
+                                sessionTable.addSession(new session(this.myself, otherUser, port, false));
                                 System.out.println("Session began on client's side with port : " + port);
                                 break;
                             case "disconnect":
-                                //session currentSession = sessionTable.getSessionByName(theirUsername);
                                 sessionTable.closeSession(theirUsername);
-                                System.out.println("print random");
-                                //System.out.println("Going to close session with " + currentSession.otherUserData.getUsername());
-                                //currentSession.closeSession();
-                                //System.out.println("Finished closing session with " + currentSession.otherUserData.getUsername());
                                 break;
                             case "bye":
                                 System.out.println("Received the disconnect message");
@@ -121,29 +114,8 @@ public class mainWindowActions {
                             case "change":
                                 userList.modifyUsername(otherUser.getMacAddress(), theirUsername);
                             case "hello":
-                                try {
-                                    DatagramSocket socket = new DatagramSocket();
-                                    outByte = new ByteArrayOutputStream();
-                                    ObjectOutputStream objOut = new ObjectOutputStream(outByte);
-                                    objOut.writeObject(new systemMessage("hello", this.myself, 0));
-                                    objectSerialized = outByte.toByteArray();
-                                    DatagramPacket outPacket = new DatagramPacket(objectSerialized, objectSerialized.length, address, 2002);
-                                    try {
-                                        socket.send(outPacket);
-                                        outByte.close();
-                                        objOut.close();
-                                        socket.close();
-                                    } catch (IOException io) {
-                                        System.out.println("Error while setting up the socket for the sendHello");
-                                        io.printStackTrace();
-                                    }
-                                } catch (UnknownHostException uhe) {
-                                    System.out.println("Could not find the host");
-                                    uhe.printStackTrace();
-                                } catch (IOException e) {
-                                    System.out.println("Error while sending the message");
-                                    e.printStackTrace();
-                                }
+                                systemMessageSender systemMessageSender = new systemMessageSender();
+                                systemMessageSender.sendSystemMessage(new systemMessage("hello", myself, port), InetAddress.getByName(otherUser.getIPAddress()), false, 2002);
 
                                 //Update the activeList table
                                 userList.addElement(otherUser);
@@ -169,80 +141,29 @@ public class mainWindowActions {
 
     }
 
-    public session beginChatSession(String username, int port, userData otherUserData, DatagramSocket d, sessionTable sessionTable){
+    public void beginChatSession(int port, userData otherUserData, DatagramSocket d, sessionTable sessionTable){
         try {
-            String msg = username + " begin "+ port;
-            System.out.println("beginSession message sent :" + msg);
-            DatagramPacket outPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName(otherUserData.getIPAddress()), 3000);
-            d.send(outPacket);
-            System.out.println("Session began on server's side with port : " + port);
-            session session = new session(username, otherUserData, port,true);
+            systemMessageSender systemMessageSender = new systemMessageSender();
+            systemMessageSender.sendSystemMessage(new systemMessage("begin", myself, port), InetAddress.getByName(otherUserData.getIPAddress()), false, 3000);
+            System.out.println("beginSession message sent");
+            session session = new session(myself, otherUserData, port,true);
             sessionTable.addSession(session);
-            return session;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
     }
 
 
-    public void changeUsername(String usr){
-        if (checkUsername(usr)){
+    //TODO : do all the necessary changes for when someone change their username
+    public void changeUsername(String newName){
+        if (userList.getUserByName(newName) == null){
             try {
-                DatagramSocket socket = new DatagramSocket();
-                DatagramPacket outPacket = new DatagramPacket(usr.getBytes(), usr.length(), InetAddress.getByName("10.1.255.255"), 3000);
-                socket.setBroadcast(true);
-                socket.send(outPacket);
-            } catch(Exception e){
-                System.out.println("raté change username");
+                //Send the message via the systemMessageSender
+                systemMessageSender systemMessageSender = new systemMessageSender();
+                systemMessageSender.sendSystemMessage(new systemMessage("change", new userData(newName, myself.getMacAddress(), myself.getIPAddress()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+            } catch( Exception e){
+                System.out.println("getLocalhost failed");
             }
         }
     }
-
-    public boolean checkUsername(String usr){
-        try {
-
-            //Send the message via the systemMessageSender
-            systemMessageSender systemMessageSender = new systemMessageSender();
-            systemMessageSender.sendSystemMessage(new systemMessage("check", new userData(usr, myself.getMacAddress(), myself.getIPAddress()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
-
-            //Start value for the timer
-            long startTime = System.currentTimeMillis();
-            long elapsedTime = 0L;
-
-            //Reception thread. It will last for 0.5 seconds.
-            Thread userNameReceptionThread = new Thread(() -> {
-                try{
-                    DatagramSocket serverSocket = new DatagramSocket(2004);
-                    while(true){
-
-                        //Creating the buffer for incoming messages
-                        byte[] buffer = new byte[1024];
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
-                        //Recover the datagram sent by client
-                        serverSocket.receive(packet);
-                        control.unique = false;
-
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error while receiving the users info.");
-                }
-            });
-
-
-            //Run the thread for the duration of the timer
-            userNameReceptionThread.start();
-            while (elapsedTime < 500) elapsedTime = (new Date()).getTime() - startTime;
-            userNameReceptionThread.interrupt();
-
-
-        } catch( Exception e){
-            System.out.println("getLocalhost failed");
-        }
-
-        //returns true if no message has been received
-        return control.unique;
-    }
-
 }

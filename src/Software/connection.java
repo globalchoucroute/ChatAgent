@@ -1,70 +1,81 @@
 package Software;
 
-import javax.xml.crypto.Data;
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.*;
-import java.util.Arrays;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Timer;
+
 public class connection {
 
     //Attributes
-    public userList userList = new userList();
-    public String macs;
-    public String ips;
+    private userList userList = new userList();
+    private String macs;
+    private String ips;
     public String username;
 
     //Control class for the checkUsername shared boolean
-    static class Control {
-        public volatile boolean unique = true;
-        public boolean getUnique () {
-            return unique;
-        }
-        public void setTrue(){
+    private static class Control {
+        private volatile boolean unique = true;
+        private void setTrue(){
             unique = true;
         }
     }
-    final Control control = new Control();
+    private final Control control = new Control();
 
 
     public connection (){
         InetAddress ip;
         this.macs = "";
         this.ips = "";
-        try {
-            ip = InetAddress.getLocalHost();
 
-            //NetworkInterface network = NetworkInterface.getByName("eth0");
-            NetworkInterface network = NetworkInterface.getByName("eth4");
-            Enumeration<InetAddress> addresses = network.getInetAddresses();
-            while (addresses.hasMoreElements()) {
-                InetAddress address = addresses.nextElement();
-                if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            OUTER : for (NetworkInterface interface_ : Collections.list(interfaces)) {
+                if (interface_.isLoopback()) continue;
+                if (!interface_.isUp()) continue;
+                Enumeration<InetAddress> addresses = interface_.getInetAddresses();
+                for (InetAddress address : Collections.list(addresses)) {
+                    if (address instanceof Inet6Address) continue;
+                    else if (!address.isReachable(3000)) continue;
+                    try (SocketChannel socket = SocketChannel.open()){
+                        socket.socket().setSoTimeout(3000);
+                        socket.bind(new InetSocketAddress(address, 8080));
+                        socket.connect(new InetSocketAddress("google.com", 80));
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                        continue;
+                    }
+                    byte[] mac = interface_.getHardwareAddress();
                     ip = address;
+                    //Formatting the message for a clean display
+                    StringBuilder sb = new StringBuilder(18);
+                    for (byte b : mac) {
+                        if (sb.length() > 0)
+                            sb.append(':');
+                        sb.append(String.format("%02x", b));
+                    }
+
+                    this.macs = sb.toString();
+                    this.ips = ip.toString().substring(1);
+
+                    break OUTER;
                 }
             }
-
-            byte[] mac = network.getHardwareAddress();
-
-            //Formatting the message for a clean display
-            StringBuilder sb = new StringBuilder(18);
-            for (byte b : mac) {
-                if (sb.length() > 0)
-                    sb.append(':');
-                sb.append(String.format("%02x", b));
-            }
-
-            this.macs = sb.toString();
-            this.ips = ip.toString().substring(1);
-
         } catch (UnknownHostException uhe) {
             System.out.println("Could not find the host");
             uhe.printStackTrace();
-        } catch (SocketException se) {
-            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -104,7 +115,9 @@ public class connection {
 
             //Run the thread for the duration of the timer
             userNameReceptionThread.start();
-            while (elapsedTime < 500) elapsedTime = (new Date()).getTime() - startTime;
+            while (elapsedTime < 500) {
+                elapsedTime = (new Date()).getTime() - startTime;
+            }
             userNameReceptionThread.interrupt();
 
 
@@ -118,10 +131,6 @@ public class connection {
 
     public userList sendHello(String usr){
         try {
-            //TODO : set up the mac, ip address properly
-            //Set up for the serialized message send
-            DatagramSocket socket = new DatagramSocket();
-
             //Send the message via the systemMessageSender
             systemMessageSender systemMessageSender = new systemMessageSender();
             systemMessageSender.sendSystemMessage(new systemMessage("hello", new userData(usr, macs, ips), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
@@ -130,35 +139,32 @@ public class connection {
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0L;
 
-            Thread userNameReceptionThread = new Thread(new Runnable(){
-                @Override
-                public void run(){
-                    try{
-                        DatagramSocket serverSocket = new DatagramSocket(2002);
-                        while(true){
+            Thread userNameReceptionThread = new Thread(() -> {
+                try{
+                    DatagramSocket serverSocket = new DatagramSocket(2002);
+                    while(true){
 
-                            //Creating the buffer for incoming messages
-                            byte[] buffer = new byte[1024];
-                            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                        //Creating the buffer for incoming messages
+                        byte[] buffer = new byte[1024];
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                            //Recover the datagram sent by client
-                            serverSocket.receive(packet);
+                        //Recover the datagram sent by client
+                        serverSocket.receive(packet);
 
-                            //Printing received message
-                            String msg = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-                            System.out.println(msg);
+                        //Printing received message
+                        String msg = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
+                        System.out.println(msg);
 
-                            //Parse the received string in order to update the activeList properly
-                            String[] data = msg.split(" ");
-                            userList.addElementInit(new userData(data[0], data[1], data[2]));
-                            System.out.println("New user added : " + data[0]);
+                        //Parse the received string in order to update the activeList properly
+                        String[] data = msg.split(" ");
+                        userList.addElementInit(new userData(data[0], data[1], data[2]));
+                        System.out.println("New user added : " + data[0]);
 
-                            //Resetting datagram length
-                            packet.setLength(buffer.length);
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Error while receiving the users info.");
+                        //Resetting datagram length
+                        packet.setLength(buffer.length);
                     }
+                } catch (Exception e) {
+                    System.out.println("Error while receiving the users info.");
                 }
             });
 

@@ -74,20 +74,7 @@ public class chatWindow extends JFrame {
                 }
                 text.setText("");
             }
-        });
-
-        Thread messageReceptionThread = new Thread (() -> {
-            ArrayList tab = new ArrayList();
-           while (true){
-               if (session.getIsNewMessage()){
-                   tab = session.getMessages();
-                   for (int i = 0; i<tab.size(); i++){
-                       messageDisplay.append("\n" + title + " : " + tab.get(i));
-                   }
-               }
-           }
-        });
-        messageReceptionThread.start();
+        }); 
         pack();
         setVisible(true);
     }
