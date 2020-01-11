@@ -130,7 +130,7 @@ public class session extends JFrame {
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
         //*****************************************************
 
-        //TODO : message display is still absolutely terrible. Might need to fix that
+        //TODO : message display is still absolutely terrible. Might need to fix that.
         messageListModel = new DefaultListModel();
         JLabel test = new JLabel("oui");
         messageListModel.addElement(test);

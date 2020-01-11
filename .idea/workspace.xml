@@ -60,7 +60,7 @@
       <module name="ChatAgent" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="Software.*" />
+          <option name="PATTERN" value="Software.Message.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>

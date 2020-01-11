@@ -1,4 +1,4 @@
-package Software;
+package Software.Message;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;

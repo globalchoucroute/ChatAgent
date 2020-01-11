@@ -81,8 +81,7 @@ public class userList {
     public void modifyUsername(String mac, String name){
         userData user = this.getUserByMac(mac);
         int index = list.indexOf(user);
-
-        list.set(index, new userData(name, mac, user.getIPAddress()));
+        if (index != -1) list.set(index, new userData(name, mac, user.getIPAddress()));
     }
 
     public void setGUIcontactList(contactList contactList){
