@@ -36,6 +36,7 @@ public class mainWindow extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
+        System.out.println("My user data : \nUsername : " + myself.getUsername() + "\nIP address : " + myself.getIPAddress());
         WindowListener exitListener = new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
