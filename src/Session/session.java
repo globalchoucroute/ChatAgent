@@ -71,11 +71,13 @@ public class session extends JFrame {
     public session(userData myself, userData otherUser, int port,  boolean isServer){
         super();
 
+        username = myself.getUsername();
+
         String correctPathName = "";
         String mac = otherUser.getMacAddress();
         for (int i = 0; i<mac.length(); i++){
             Character current = mac.charAt(i);
-            if (!current.equals(":")) correctPathName += current;
+            if (!current.equals(':')) correctPathName += current;
         }
         System.out.println("The corrected version of the mac address is : " + correctPathName);
 
