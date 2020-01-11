@@ -1,7 +1,10 @@
 package Software;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Inet6Address;
@@ -148,17 +151,17 @@ public class connection {
                         byte[] buffer = new byte[1024];
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
+                        System.out.println("Waiting for a packet reception");
                         //Recover the datagram sent by client
                         serverSocket.receive(packet);
+                        ByteArrayInputStream inStream = new ByteArrayInputStream(packet.getData());
+                        ObjectInput inObj = new ObjectInputStream(inStream);
+                        Object systemMsg = inObj.readObject();
 
-                        //Printing received message
-                        String msg = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
-                        System.out.println(msg);
-
-                        //Parse the received string in order to update the activeList properly
-                        String[] data = msg.split(" ");
-                        userList.addElementInit(new userData(data[0], data[1], data[2]));
-                        System.out.println("New user added : " + data[0]);
+                        if (systemMsg.getClass().toString().equals("class Software.systemMessage")) {
+                            systemMessage receivedSystemMessage = (systemMessage) systemMsg;
+                            userList.addElement(receivedSystemMessage.userData);
+                        }
 
                         //Resetting datagram length
                         packet.setLength(buffer.length);

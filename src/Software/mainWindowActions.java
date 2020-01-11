@@ -120,7 +120,7 @@ public class mainWindowActions {
                             case "hello":
                                 System.out.println("Received sendHello message... Adding new user with username " + theirUsername);
                                 systemMessageSender systemMessageSender = new systemMessageSender();
-                                systemMessageSender.sendSystemMessage(new systemMessage("hello", myself, port), InetAddress.getByName(otherUser.getIPAddress()), false, 2002);
+                                systemMessageSender.sendSystemMessage(new systemMessage("hi", myself, port), InetAddress.getByName(otherUser.getIPAddress()), false, 2002);
 
                                 //Update the activeList table
                                 userList.addElement(otherUser);
