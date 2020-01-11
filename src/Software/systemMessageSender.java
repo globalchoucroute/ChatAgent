@@ -27,6 +27,7 @@ public class systemMessageSender {
                 socket.setBroadcast(isBroadcast);
                 try {
                     socket.send(outPacket);
+                    System.out.println("Message has been sent (systemMessageSender");
                     outByte.close();
                     objOut.close();
                 } catch (IOException io) {
