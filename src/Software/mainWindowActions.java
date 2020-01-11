@@ -74,7 +74,9 @@ public class mainWindowActions {
                     ByteArrayInputStream inStream = new ByteArrayInputStream(packet.getData());
                     ObjectInput inObj = new ObjectInputStream(inStream);
                     Object systemMsg = inObj.readObject();
-                    if (systemMsg.getClass().toString().equals("class systemMessage")) {
+
+                    if (systemMsg.getClass().toString().equals("class Software.systemMessage")) {
+
                         receivedSystemMessage = (systemMessage) systemMsg;
 
                         //Set up the useful variables for later use
@@ -83,6 +85,8 @@ public class mainWindowActions {
                         theirUsername = otherUser.getUsername();
                         address = InetAddress.getByName(receivedSystemMessage.userData.getIPAddress());
                         port = receivedSystemMessage.port;
+
+                        System.out.println("System message received with instruction " + instruction);
 
                         switch (instruction) {
                             case "check":
@@ -114,6 +118,7 @@ public class mainWindowActions {
                             case "change":
                                 userList.modifyUsername(otherUser.getMacAddress(), theirUsername);
                             case "hello":
+                                System.out.println("Received sendHello message... Adding new user with username " + theirUsername);
                                 systemMessageSender systemMessageSender = new systemMessageSender();
                                 systemMessageSender.sendSystemMessage(new systemMessage("hello", myself, port), InetAddress.getByName(otherUser.getIPAddress()), false, 2002);
 
