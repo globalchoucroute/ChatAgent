@@ -334,6 +334,8 @@ public class session extends JFrame {
         messageText.setEditable(false);
         messagePanel.setToolTipText(timestamp);
         messageDisplayPane.add(messagePanel);
+        messageDisplayPane.validate();
+        messageDisplayPane.repaint();
     }
 
     public void closeSession(){
