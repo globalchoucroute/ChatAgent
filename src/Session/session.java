@@ -49,6 +49,7 @@ public class session extends JFrame {
     private JTextField text = new JTextField("Write a message...");
     private Socket connectionSocket;
     private BufferedReader bufferIn;
+    private JPanel messageDisplayPane;
 
     //Attributes for the message fetching
     public File messagesFile;
@@ -73,12 +74,13 @@ public class session extends JFrame {
 
         username = myself.getUsername();
 
-        String correctPathName = "";
+        StringBuilder correctPathName = new StringBuilder();
         String mac = otherUser.getMacAddress();
         for (int i = 0; i<mac.length(); i++){
             Character current = mac.charAt(i);
-            if (!current.equals(':')) correctPathName += current;
+            if (!current.equals(':')) correctPathName.append(current);
         }
+
         System.out.println("The corrected version of the mac address is : " + correctPathName);
 
         otherUserData = otherUser;
@@ -133,16 +135,15 @@ public class session extends JFrame {
         //*****************************************************
 
         //TODO : message display is still absolutely terrible. Might need to fix that.
-        messageListModel = new DefaultListModel();
-        JLabel test = new JLabel("oui");
-        messageListModel.addElement(test);
-        JList<JLabel> messageList = new JList<>();
+        messageDisplayPane = new JPanel();
+        messageDisplayPane.setLayout(new BoxLayout(messageDisplayPane, BoxLayout.Y_AXIS));
+
 
         JButton sendButton = new JButton("Send");
         JPanel textAreaPanel = new JPanel();
         messageDisplay = new JTextArea("This is the start of your conversation with " + otherUsername + ".\n");
         messageDisplay.setEditable(false);
-        JScrollPane messageArea = new JScrollPane(messageDisplay);
+        JScrollPane messageArea = new JScrollPane(messageDisplayPane);
 
         this.setTitle(otherUsername);
 
@@ -210,6 +211,7 @@ public class session extends JFrame {
                             try {
                                 sendMessage(text.getText());
                                 messageDisplay.append("\n" + username + " : " + text.getText());
+                                addMessage(true, text.getText(), (new Timestamp(System.currentTimeMillis()).toString()));
                             } catch (Exception ex) {
                                 messageDisplay.append("\nSorry, there was an error while trying to send the message.");
                                 System.out.println("Failed to send the message");
@@ -226,6 +228,7 @@ public class session extends JFrame {
                     try {
                         sendMessage(text.getText());
                         messageDisplay.append("\n" + username + " : " + text.getText());
+                        addMessage(true, text.getText(), (new Timestamp(System.currentTimeMillis()).toString()));
                     } catch (Exception ex) {
                         messageDisplay.append("\nSorry, there was an error while trying to send the message.");
                         System.out.println("Failed to send the message");
@@ -261,6 +264,7 @@ public class session extends JFrame {
                         String message = bufferIn.readLine();
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         messageDisplay.append("\n" + otherUsername + " : " + message);
+                        addMessage(false, text.getText(), timestamp.toString());
                         System.out.println("Message received : " + message);
                         if (!message.equals("null") && !message.equals("")) {
                             JSONObject jsonMessage = new JSONObject();
@@ -310,25 +314,28 @@ public class session extends JFrame {
     private void addMessage(boolean isMe, String message, String timestamp){
         JPanel messagePanel = new JPanel();
         JTextArea messageText = new JTextArea(message);
+        Border border;
         if (isMe){
-            Border border = BorderFactory.createLineBorder(Color.blue);
-            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, timestamp + " - You :");
+            border = BorderFactory.createLineBorder(Color.blue);
+            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "You :");
             titledBorder.setTitleJustification(TitledBorder.RIGHT);
             titledBorder.setTitleColor(Color.blue);
         }
         else {
-            Border border = BorderFactory.createLineBorder(Color.red);
-            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, timestamp + " - " + otherUserData.getUsername() + " :");
+            border = BorderFactory.createLineBorder(Color.red);
+            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
             titledBorder.setTitleJustification(TitledBorder.LEFT);
             titledBorder.setTitleColor(Color.red);
         }
+        messagePanel.setBorder(border);
         messagePanel.add(messageText);
         messageText.setLineWrap(true);
         messageText.setWrapStyleWord(true);
         messageText.setEditable(false);
-
-
+        messagePanel.setToolTipText(timestamp);
+        messageDisplayPane.add(messagePanel);
     }
+
     public void closeSession(){
         try {
             System.out.println("Entered the closeSession method...");

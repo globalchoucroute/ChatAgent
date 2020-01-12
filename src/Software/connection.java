@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class connection {
 
@@ -40,7 +41,6 @@ public class connection {
         InetAddress ip;
         this.macs = "";
         this.ips = "";
-
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             OUTER : for (NetworkInterface interface_ : Collections.list(interfaces)) {
@@ -52,7 +52,8 @@ public class connection {
                     else if (!address.isReachable(3000)) continue;
                     try (SocketChannel socket = SocketChannel.open()){
                         socket.socket().setSoTimeout(3000);
-                        socket.bind(new InetSocketAddress(address, 8080));
+                        //Connect to a random port, otherwise connection may be refused
+                        socket.bind(new InetSocketAddress(address, ThreadLocalRandom.current().nextInt(9000, 10001)));
                         socket.connect(new InetSocketAddress("google.com", 80));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
