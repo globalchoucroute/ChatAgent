@@ -14,13 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -52,9 +46,10 @@ public class session extends JFrame {
     private JPanel messageDisplayPane;
 
     //Attributes for the message fetching
+    private JSONArray jsonArray;
     public File messagesFile;
     public File messagesJson;
-    public JSONObject jsonObject = new JSONObject();
+    public JSONObject jsonObject;
     public String userPath;
 
     static class Connected {
@@ -66,7 +61,7 @@ public class session extends JFrame {
             isConnected = false;
         }
     }
-    final Connected controlConnected = new Connected();
+    private final Connected controlConnected = new Connected();
 
     //Constructor. Will display the new window and start the reception thread.
     public session(userData myself, userData otherUser, int port,  boolean isServer){
@@ -85,39 +80,17 @@ public class session extends JFrame {
 
         otherUserData = otherUser;
         String otherUsername = otherUser.getUsername();
-        String path = "conversationData/" + correctPathName;
-        messagesFile = new File(path);
-        String userPath = path + "/" + correctPathName + ".json";
-        messagesJson = new File(userPath);
+        String userPath = "conversationData/" + correctPathName + ".json";
+        //messagesFile = new File(userPath);
 
 
         //*****************************************************
         // THIS IS THE PART CONCERNING THE MESSAGE FETCH
         //*****************************************************
-        if (!messagesFile.exists()) {
-            boolean b = messagesFile.mkdir();
-
-            PrintWriter writer;
-            try {
-                String filename = correctPathName + ".json";
-                writer = new PrintWriter(filename, StandardCharsets.UTF_8);
-            } catch (Exception e){
-                System.out.println("Error while creating the json file");
-                e.printStackTrace();
-            }
-        }
-        else if (messagesFile.exists() && !messagesFile.isDirectory()){
-            JSONArray a;
-            try {
-                JSONParser parser = new JSONParser();
-                a = (JSONArray) parser.parse(new FileReader(messagesFile));
-
-            } catch (Exception e) {
-                System.out.println("Error. Could not find the message file");
-                e.printStackTrace();
-                a = null;
-            }
-            for (Object o : a){
+        try {
+            jsonObject = (JSONObject) new JSONParser().parse(new FileReader(userPath));
+            jsonArray = (JSONArray) jsonObject.get("messages");
+            for (Object o : jsonArray){
                 JSONObject messageData = (JSONObject) o;
                 String message = (String) messageData.get("message");
                 String isMe = (String) messageData.get("flag");
@@ -128,6 +101,13 @@ public class session extends JFrame {
                     messageDisplay.append("\n" + otherUsername + " : " + message);
                 }
             }
+        } catch (FileNotFoundException e) {
+            //The file does not exist, we create it
+            jsonObject = new JSONObject();
+            jsonArray = new JSONArray();
+            jsonObject.put("messages", jsonArray);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
 
         //*****************************************************
@@ -176,8 +156,6 @@ public class session extends JFrame {
                         systemMessageSender.sendSystemMessage(systemMessage, InetAddress.getByName(otherUserData.getIPAddress()), false, 3000);
                         controlConnected.disconnect();
                         System.out.println("Turned the controller to false");
-                        connectionSocket.close();
-                        System.out.println("Closed the socket");
                         dispose();
                         try (FileWriter file = new FileWriter(userPath)){
                             file.write(jsonObject.toJSONString());
@@ -187,15 +165,9 @@ public class session extends JFrame {
                             oskour.printStackTrace();
                         }
                         //connectionThread.join();
-                    } catch (SocketException se){
-                        System.out.println("Error while setting up the dcSocket");
-                        se.printStackTrace();
                     } catch (UnknownHostException he){
                         System.out.println("Unknown host for the disconnect message");
                         he.printStackTrace();
-                    } catch (IOException ie){
-                        System.out.println("Error while sending the message");
-                        ie.printStackTrace();
                     }
                 }
             }
@@ -211,7 +183,6 @@ public class session extends JFrame {
                             try {
                                 sendMessage(text.getText());
                                 messageDisplay.append("\n" + username + " : " + text.getText());
-                                addMessage(true, text.getText(), (new Timestamp(System.currentTimeMillis()).toString()));
                             } catch (Exception ex) {
                                 messageDisplay.append("\nSorry, there was an error while trying to send the message.");
                                 System.out.println("Failed to send the message");
@@ -228,7 +199,6 @@ public class session extends JFrame {
                     try {
                         sendMessage(text.getText());
                         messageDisplay.append("\n" + username + " : " + text.getText());
-                        addMessage(true, text.getText(), (new Timestamp(System.currentTimeMillis()).toString()));
                     } catch (Exception ex) {
                         messageDisplay.append("\nSorry, there was an error while trying to send the message.");
                         System.out.println("Failed to send the message");
@@ -271,7 +241,7 @@ public class session extends JFrame {
                             jsonMessage.put("message", message);
                             jsonMessage.put("timestamp", timestamp);
                             jsonMessage.put("flag", 0);
-                            jsonObject.put("messagedata", jsonMessage);
+                            jsonArray.add(jsonMessage);
                         }
                     }
                 } catch (IOException e) {
@@ -292,13 +262,14 @@ public class session extends JFrame {
     private void sendMessage(String message){
         out.println(message);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        addMessage(true, message, timestamp.toString());
         System.out.println("Message sent : " + message);
         JSONObject jsonMessage = new JSONObject();
         if (!message.equals("null") && !message.equals("")) {
             jsonMessage.put("message", message);
             jsonMessage.put("timestamp", timestamp);
             jsonMessage.put("flag", 1);
-            jsonObject.put("messagedata", jsonMessage);
+            jsonArray.add(jsonMessage);
         }
     }
 
@@ -313,52 +284,45 @@ public class session extends JFrame {
 
     private void addMessage(boolean isMe, String message, String timestamp){
         JPanel messagePanel = new JPanel();
-        JTextArea messageText = new JTextArea(message);
+        JLabel messageText = new JLabel(message);
         Border border;
+        TitledBorder titledBorder;
         if (isMe){
             border = BorderFactory.createLineBorder(Color.blue);
-            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "You :");
+            titledBorder = BorderFactory.createTitledBorder(border, "You :");
             titledBorder.setTitleJustification(TitledBorder.RIGHT);
             titledBorder.setTitleColor(Color.blue);
+            messagePanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         }
         else {
             border = BorderFactory.createLineBorder(Color.red);
-            TitledBorder titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
+            titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
             titledBorder.setTitleJustification(TitledBorder.LEFT);
             titledBorder.setTitleColor(Color.red);
+            messagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         }
-        messagePanel.setBorder(border);
+        messagePanel.setPreferredSize(new Dimension(300,20));
+        messagePanel.setBorder(titledBorder);
         messagePanel.add(messageText);
-        messageText.setLineWrap(true);
-        messageText.setWrapStyleWord(true);
-        messageText.setEditable(false);
         messagePanel.setToolTipText(timestamp);
         messageDisplayPane.add(messagePanel);
         messageDisplayPane.validate();
         messageDisplayPane.repaint();
     }
 
+
     public void closeSession(){
-        try {
-            System.out.println("Entered the closeSession method...");
-            //bufferIn.close();
-            System.out.println("Closed the buffer");
-            controlConnected.disconnect();
-            System.out.println("Turned the controller to false");
-            connectionSocket.close();
-            System.out.println("Closed the socket");
-            try (FileWriter file = new FileWriter(userPath)){
-                file.write(jsonObject.toJSONString());
-                file.flush();
-            } catch (IOException oskour) {
-                System.out.println("Error while writing in the json file");
-                oskour.printStackTrace();
-            }
-            this.dispose();
-        } catch (IOException e){
-            System.out.println("Error while closing the TCP connection socket");
-            e.printStackTrace();
+        System.out.println("Entered the closeSession method...");
+        controlConnected.disconnect();
+        System.out.println("Turned the controller to false");
+        try (FileWriter file = new FileWriter(userPath)){
+            file.write(jsonObject.toJSONString());
+            file.flush();
+        } catch (IOException oskour) {
+            System.out.println("Error while writing in the json file");
+            oskour.printStackTrace();
         }
+        this.dispose();
     }
 
 }

@@ -51,7 +51,7 @@ public class connectionWindow extends JFrame {
         username.add(userNameField, BorderLayout.EAST);
         enter.setAlignmentY(Component.CENTER_ALIGNMENT);
         userNameField.setAlignmentY(Component.CENTER_ALIGNMENT);
-        userNameField.setToolTipText("Enter your username");
+        userNameField.setToolTipText("Enter your username here");
         userNameField.setPreferredSize(new Dimension(150,20));
         add(username);
 

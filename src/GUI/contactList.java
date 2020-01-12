@@ -8,12 +8,12 @@ import Software.userList;
 public class contactList extends JPanel {
 
     //Attributes
-    DefaultListModel<String> listModel;
+    private DefaultListModel<String> listModel;
     JList<String> contacts;
-    JScrollPane container;
+    private JScrollPane container;
 
     //Constructor
-    public contactList(userList userList) {
+    contactList(userList userList) {
         super();
         this.listModel = new DefaultListModel<>();
         listModel = initContactList(userList);
@@ -42,7 +42,7 @@ public class contactList extends JPanel {
     }
 
     //Setters
-    public DefaultListModel initContactList(userList userList){
+    private DefaultListModel initContactList(userList userList){
         for (int i = 0; i < userList.getLength(); i++){
             listModel.addElement(userList.getUser(i).getUsername());
         }
