@@ -4,25 +4,37 @@ import Software.systemMessage;
 import Software.systemMessageSender;
 import Software.userData;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 
 import org.json.simple.JSONArray;
@@ -36,7 +48,6 @@ public class session extends JFrame {
     private PrintWriter out;
 
     //Attributes for the UI
-    private DefaultListModel messageListModel;
     public String username;
     private userData otherUserData;
     private JTextArea messageDisplay;
@@ -47,17 +58,15 @@ public class session extends JFrame {
 
     //Attributes for the message fetching
     private JSONArray jsonArray;
-    public File messagesFile;
-    public File messagesJson;
-    public JSONObject jsonObject;
-    public String userPath;
+    private JSONObject jsonObject;
+    private String userPath;
 
     static class Connected {
-        public volatile boolean isConnected = true;
-        public boolean getConnected () {
+        volatile boolean isConnected = true;
+        boolean getConnected () {
             return isConnected;
         }
-        public void disconnect(){
+        void disconnect(){
             isConnected = false;
         }
     }
@@ -80,7 +89,7 @@ public class session extends JFrame {
 
         otherUserData = otherUser;
         String otherUsername = otherUser.getUsername();
-        String userPath = "conversationData/" + correctPathName + ".json";
+        userPath = "conversationData/" + correctPathName + ".json";
         //messagesFile = new File(userPath);
 
 
@@ -113,8 +122,6 @@ public class session extends JFrame {
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
         //*****************************************************
-
-        //TODO : message display is still absolutely terrible. Might need to fix that.
         messageDisplayPane = new JPanel();
         messageDisplayPane.setLayout(new BoxLayout(messageDisplayPane, BoxLayout.Y_AXIS));
 
@@ -198,7 +205,6 @@ public class session extends JFrame {
                 if (!text.getText().equals("")) {
                     try {
                         sendMessage(text.getText());
-                        messageDisplay.append("\n" + username + " : " + text.getText());
                     } catch (Exception ex) {
                         messageDisplay.append("\nSorry, there was an error while trying to send the message.");
                         System.out.println("Failed to send the message");
@@ -292,16 +298,14 @@ public class session extends JFrame {
             titledBorder = BorderFactory.createTitledBorder(border, "You :");
             titledBorder.setTitleJustification(TitledBorder.RIGHT);
             titledBorder.setTitleColor(Color.blue);
-            messagePanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         }
         else {
             border = BorderFactory.createLineBorder(Color.red);
             titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
             titledBorder.setTitleJustification(TitledBorder.LEFT);
             titledBorder.setTitleColor(Color.red);
-            messagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         }
-        messagePanel.setPreferredSize(new Dimension(300,20));
+        messagePanel.setPreferredSize(new Dimension(400,20));
         messagePanel.setBorder(titledBorder);
         messagePanel.add(messageText);
         messagePanel.setToolTipText(timestamp);
