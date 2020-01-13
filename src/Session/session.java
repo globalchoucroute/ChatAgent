@@ -306,6 +306,7 @@ public class session extends JFrame {
             titledBorder.setTitleColor(Color.red);
         }
         messagePanel.setPreferredSize(new Dimension(400,20));
+        messagePanel.setMaximumSize(new Dimension(400, 20));
         messagePanel.setBorder(titledBorder);
         messagePanel.add(messageText);
         messagePanel.setToolTipText(timestamp);
