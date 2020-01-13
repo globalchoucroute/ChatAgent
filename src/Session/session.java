@@ -55,6 +55,7 @@ public class session extends JFrame {
     private Socket connectionSocket;
     private BufferedReader bufferIn;
     private JPanel messageDisplayPane;
+    private JScrollPane messageArea;
 
     //Attributes for the message fetching
     private JSONArray jsonArray;
@@ -122,16 +123,17 @@ public class session extends JFrame {
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
         //*****************************************************
-        messageDisplayPane = new JPanel();
-        messageDisplayPane.setLayout(new BoxLayout(messageDisplayPane, BoxLayout.Y_AXIS));
+        /*messageDisplayPane = new JPanel();
+        messageDisplayPane.setLayout(new BoxLayout(messageDisplayPane, BoxLayout.Y_AXIS));*/
 
 
         JButton sendButton = new JButton("Send");
         JPanel textAreaPanel = new JPanel();
         messageDisplay = new JTextArea("This is the start of your conversation with " + otherUsername + ".\n");
         messageDisplay.setEditable(false);
-        JScrollPane messageArea = new JScrollPane(messageDisplayPane);
-
+        messageArea = new JScrollPane();
+        messageArea.setLayout(new BoxLayout(messageArea, BoxLayout.Y_AXIS));
+        messageArea.setWheelScrollingEnabled(true);
         this.setTitle(otherUsername);
 
         sendButton.setMnemonic(KeyEvent.VK_ENTER);
@@ -310,9 +312,9 @@ public class session extends JFrame {
         messagePanel.setBorder(titledBorder);
         messagePanel.add(messageText);
         messagePanel.setToolTipText(timestamp);
-        messageDisplayPane.add(messagePanel);
-        messageDisplayPane.validate();
-        messageDisplayPane.repaint();
+        messageArea.add(messagePanel);
+        messageArea.validate();
+        messageArea.repaint();
     }
 
 
