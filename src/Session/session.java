@@ -307,12 +307,14 @@ public class session extends JFrame {
             titledBorder = BorderFactory.createTitledBorder(border, "You :");
             titledBorder.setTitleJustification(TitledBorder.RIGHT);
             titledBorder.setTitleColor(Color.blue);
+            messageText.setHorizontalAlignment(JLabel.RIGHT);
         }
         else {
             border = BorderFactory.createLineBorder(Color.red);
             titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
             titledBorder.setTitleJustification(TitledBorder.LEFT);
             titledBorder.setTitleColor(Color.red);
+            messageText.setHorizontalAlignment(JLabel.LEFT);
         }
         messagePanel.setPreferredSize(new Dimension(400,50));
         messagePanel.setMaximumSize(new Dimension(400, 50));

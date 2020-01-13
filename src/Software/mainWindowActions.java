@@ -30,6 +30,7 @@ public class mainWindowActions {
     //Constructor
     public mainWindowActions(userData myself, userList u, sessionTable sessionTable) {
         userList = u;
+        this.username = myself.getUsername();
         this.myself = myself;
         //This thread is meant to listen to system messages, such as :
         //  - A user wants to start a chat session
@@ -90,7 +91,7 @@ public class mainWindowActions {
 
                         switch (instruction) {
                             case "check":
-                                if (theirUsername.equals(username)) {
+                                if (theirUsername.equals(myself.getUsername())) {
                                     try {
                                         DatagramSocket clientSocket = new DatagramSocket();
                                         DatagramPacket outPacket = new DatagramPacket(username.getBytes(), username.length(), address, 2004);
@@ -140,8 +141,6 @@ public class mainWindowActions {
                 cnfe.printStackTrace();
             }
         });
-
-        this.username = username;
         messageReception.start();
 
     }
