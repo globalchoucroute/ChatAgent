@@ -96,7 +96,7 @@ public class session extends JFrame {
         //*****************************************************
         // THIS IS THE PART CONCERNING THE MESSAGE FETCH
         //*****************************************************
-        try {
+        /*try {
             jsonObject = (JSONObject) new JSONParser().parse(new FileReader(userPath));
             jsonArray = (JSONArray) jsonObject.get("messages");
             for (Object o : jsonArray){
@@ -117,7 +117,7 @@ public class session extends JFrame {
             jsonObject.put("messages", jsonArray);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
@@ -164,13 +164,13 @@ public class session extends JFrame {
                         controlConnected.disconnect();
                         System.out.println("Turned the controller to false");
                         dispose();
-                        try (FileWriter file = new FileWriter(userPath)){
+                        /*try (FileWriter file = new FileWriter(userPath)){
                             file.write(jsonObject.toJSONString());
                             file.flush();
                         } catch (IOException oskour) {
                             System.out.println("Error while writing in the json file");
                             oskour.printStackTrace();
-                        }
+                        }*/
                         //connectionThread.join();
                     } catch (UnknownHostException he){
                         System.out.println("Unknown host for the disconnect message");
