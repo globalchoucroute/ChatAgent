@@ -298,11 +298,12 @@ public class session extends JFrame {
     }
 
     private void addMessage(boolean isMe, String message, String timestamp){
-        JPanel messagePanel = new JPanel();
+        JPanel messagePanel;
         JLabel messageText = new JLabel(message);
         Border border;
         TitledBorder titledBorder;
         if (isMe){
+            messagePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             border = BorderFactory.createLineBorder(Color.blue);
             titledBorder = BorderFactory.createTitledBorder(border, "You :");
             titledBorder.setTitleJustification(TitledBorder.RIGHT);
@@ -310,6 +311,7 @@ public class session extends JFrame {
             messageText.setHorizontalAlignment(JLabel.RIGHT);
         }
         else {
+            messagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             border = BorderFactory.createLineBorder(Color.red);
             titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
             titledBorder.setTitleJustification(TitledBorder.LEFT);

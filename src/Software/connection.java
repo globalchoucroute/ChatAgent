@@ -117,7 +117,7 @@ public class connection {
             });
 
             userNameReceptionThread.start();
-            Thread.sleep(2000);
+            Thread.sleep(500);
             userNameReceptionThread.interrupt();
 
 
@@ -170,9 +170,7 @@ public class connection {
 
             //Run the thread for the duration of the timer
             userNameReceptionThread.start();
-            while (elapsedTime < 2000) {
-                elapsedTime = (new Date()).getTime() - startTime;
-            }
+            Thread.sleep(1000);
             userNameReceptionThread.interrupt();
 
 
