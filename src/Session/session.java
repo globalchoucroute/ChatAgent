@@ -319,6 +319,7 @@ public class session extends JFrame {
         System.out.println("Entered the closeSession method...");
         controlConnected.disconnect();
         System.out.println("Turned the controller to false");
+        this.dispose();
         try (FileWriter file = new FileWriter(userPath)){
             file.write(jsonObject.toJSONString());
             file.flush();
@@ -326,7 +327,6 @@ public class session extends JFrame {
             System.out.println("Error while writing in the json file");
             oskour.printStackTrace();
         }
-        this.dispose();
     }
 
 }

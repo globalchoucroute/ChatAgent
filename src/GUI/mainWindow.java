@@ -7,8 +7,7 @@ import Software.userData;
 import Software.userList;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -27,15 +26,14 @@ public class mainWindow extends JFrame {
         username = myself.getUsername();
         GUI.contactList contactList = new contactList(usersList);
         this.userActions = new userActions(contactList.contacts, myself, this, usersList, sessionTable);
-
+        userActions.setAlignmentX(Component.CENTER_ALIGNMENT);
         ImageIcon icon = new ImageIcon("images/icon.png");
         setIconImage(icon.getImage());
 
         add(contactList, BorderLayout.WEST);
         add(userActions, BorderLayout.CENTER);
-        setPreferredSize(new Dimension(600,400));
+        setPreferredSize(new Dimension(400,200));
         setMinimumSize(new Dimension(200,200));
-        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 

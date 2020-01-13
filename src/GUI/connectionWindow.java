@@ -49,6 +49,7 @@ public class connectionWindow extends JFrame {
         JLabel enter = new JLabel("<html><p style = 'font-size:100%;font-family:Calibri;'>Please enter your username : </p></html>");
         username.add(enter, BorderLayout.WEST);
         username.add(userNameField, BorderLayout.EAST);
+        userNameField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
         enter.setAlignmentY(Component.CENTER_ALIGNMENT);
         userNameField.setAlignmentY(Component.CENTER_ALIGNMENT);
         userNameField.setToolTipText("Enter your username here");
@@ -61,6 +62,7 @@ public class connectionWindow extends JFrame {
         buttonPane.setPreferredSize(new Dimension(330,20));
         connectButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         connectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        connectButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(buttonPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

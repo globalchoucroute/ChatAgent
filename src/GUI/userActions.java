@@ -5,11 +5,7 @@ import Software.sessionTable;
 import Software.userData;
 import Software.userList;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.net.DatagramSocket;
 import Session.session;
@@ -27,7 +23,9 @@ public class userActions extends JPanel {
         mainWindowActions = new mainWindowActions(myself, userList, sessionTable);
 
         //Starts a session with the selected user when the button is clicked
+        JPanel startSessionPane = new JPanel();
         JButton startSession = new JButton("Begin chat session");
+        startSessionPane.add(startSession);
         startSession.addActionListener(e -> {
             if (L.getSelectedIndex() != -1){
                 try {
@@ -49,12 +47,14 @@ public class userActions extends JPanel {
         });
 
         //Open the change username window when the button is clicked
+        JPanel changeUsernamePane = new JPanel();
         JButton changeUsername = new JButton("Change username");
+        changeUsernamePane.add(changeUsername);
         changeUsername.addActionListener(e -> new changeUsernameWindow(parent));
-
-        add(startSession, BorderLayout.NORTH);
-        add(userName, BorderLayout.CENTER);
-        add(changeUsername, BorderLayout.SOUTH);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(startSessionPane);
+        add(userName);
+        add(changeUsernamePane);
 
     }
 
