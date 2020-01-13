@@ -4,12 +4,19 @@ import Software.systemMessage;
 import Software.systemMessageSender;
 import Software.userData;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -114,17 +121,26 @@ public class session extends JFrame {
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
         //*****************************************************
-        /*messageDisplayPane = new JPanel();
-        messageDisplayPane.setLayout(new BoxLayout(messageDisplayPane, BoxLayout.Y_AXIS));*/
+        messageDisplayPane = new JPanel();
+        messageDisplayPane.setLayout(new BoxLayout(messageDisplayPane, BoxLayout.Y_AXIS));
 
 
         JButton sendButton = new JButton("Send");
         JPanel textAreaPanel = new JPanel();
         messageDisplay = new JTextArea("This is the start of your conversation with " + otherUsername + ".\n");
         messageDisplay.setEditable(false);
-        messageArea = new JScrollPane();
-        messageArea.setLayout(new ScrollPaneLayout());
+        messageArea = new JScrollPane(messageDisplayPane);
         messageArea.setWheelScrollingEnabled(true);
+        messageArea.setAutoscrolls(true);
+        messageArea.setVerticalScrollBarPolicy(messageArea.VERTICAL_SCROLLBAR_AS_NEEDED);
+        var ref = new Object() {
+            int verticalScrollBarMaximumValue = messageArea.getVerticalScrollBar().getMaximum();
+        };
+        messageArea.getVerticalScrollBar().addAdjustmentListener(e->{
+            if ((ref.verticalScrollBarMaximumValue - e.getAdjustable().getMaximum()) == 0) return;
+            e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+            ref.verticalScrollBarMaximumValue = messageArea.getVerticalScrollBar().getMaximum();
+        });
         this.setTitle(otherUsername);
 
         sendButton.setMnemonic(KeyEvent.VK_ENTER);
@@ -303,7 +319,9 @@ public class session extends JFrame {
         messagePanel.setBorder(titledBorder);
         messagePanel.add(messageText);
         messagePanel.setToolTipText(timestamp);
-        messageArea.add(messagePanel);
+        messageDisplayPane.add(messagePanel);
+        messageDisplayPane.validate();
+        messageDisplayPane.repaint();
         messageArea.validate();
         messageArea.repaint();
     }

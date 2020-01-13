@@ -95,12 +95,12 @@ public class connection {
             //Start value for the timer
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0L;
-
+            boolean wait = true;
             //Reception thread. It will last for 0.5 seconds.
             Thread userNameReceptionThread = new Thread(() -> {
                 try{
                     DatagramSocket serverSocket = new DatagramSocket(2004);
-                    while(true){
+                    while(wait){
 
                         //Creating the buffer for incoming messages
                         byte[] buffer = new byte[1024];
@@ -116,12 +116,8 @@ public class connection {
                 }
             });
 
-
-            //Run the thread for the duration of the timer
             userNameReceptionThread.start();
-            while (elapsedTime < 500) {
-                elapsedTime = (new Date()).getTime() - startTime;
-            }
+            Thread.sleep(2000);
             userNameReceptionThread.interrupt();
 
 
