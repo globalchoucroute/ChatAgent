@@ -4,16 +4,7 @@ import Software.systemMessage;
 import Software.systemMessageSender;
 import Software.userData;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
@@ -132,7 +123,7 @@ public class session extends JFrame {
         messageDisplay = new JTextArea("This is the start of your conversation with " + otherUsername + ".\n");
         messageDisplay.setEditable(false);
         messageArea = new JScrollPane();
-        messageArea.setLayout(new BoxLayout(messageArea, BoxLayout.Y_AXIS));
+        messageArea.setLayout(new ScrollPaneLayout());
         messageArea.setWheelScrollingEnabled(true);
         this.setTitle(otherUsername);
 
