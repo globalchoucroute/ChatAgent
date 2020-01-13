@@ -240,14 +240,14 @@ public class session extends JFrame {
                         String message = bufferIn.readLine();
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         messageDisplay.append("\n" + otherUsername + " : " + message);
-                        addMessage(false, text.getText(), timestamp.toString());
+                        addMessage(false, message, timestamp.toString());
                         System.out.println("Message received : " + message);
                         if (!message.equals("null") && !message.equals("")) {
                             JSONObject jsonMessage = new JSONObject();
-                            jsonMessage.put("message", message);
+                            /*jsonMessage.put("message", message);
                             jsonMessage.put("timestamp", timestamp);
                             jsonMessage.put("flag", 0);
-                            jsonArray.add(jsonMessage);
+                            jsonArray.add(jsonMessage);*/
                         }
                     }
                 } catch (IOException e) {
@@ -272,10 +272,10 @@ public class session extends JFrame {
         System.out.println("Message sent : " + message);
         JSONObject jsonMessage = new JSONObject();
         if (!message.equals("null") && !message.equals("")) {
-            jsonMessage.put("message", message);
+            /*jsonMessage.put("message", message);
             jsonMessage.put("timestamp", timestamp);
             jsonMessage.put("flag", 1);
-            jsonArray.add(jsonMessage);
+            jsonArray.add(jsonMessage);*/
         }
     }
 
@@ -320,13 +320,13 @@ public class session extends JFrame {
         controlConnected.disconnect();
         System.out.println("Turned the controller to false");
         this.dispose();
-        try (FileWriter file = new FileWriter(userPath)){
+        /*try (FileWriter file = new FileWriter(userPath)){
             file.write(jsonObject.toJSONString());
             file.flush();
         } catch (IOException oskour) {
             System.out.println("Error while writing in the json file");
             oskour.printStackTrace();
-        }
+        }*/
     }
 
 }
