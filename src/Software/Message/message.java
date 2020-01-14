@@ -5,20 +5,9 @@ import java.util.Date;
 import java.sql.Timestamp;
 
 public class message implements Serializable {
-    //Attributes
-    public String content;
-    public Timestamp timestamp;
-    public File image;
+    private static final long serialVersionUID = 3335L;
 
     public message(){
-
     }
 
-    public String getContent(){
-        return content;
-    }
-
-    public Timestamp getTimestamp(){
-        return timestamp;
-    }
 }

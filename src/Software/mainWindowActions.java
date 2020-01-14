@@ -14,6 +14,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.rmi.activation.UnknownObjectException;
 import java.util.Date;
 import java.util.Enumeration;
 import Session.session;
@@ -39,7 +40,6 @@ public class mainWindowActions {
         Thread messageReception = new Thread(() -> {
             try {
                 DatagramSocket serverSocket = new DatagramSocket(3000);
-
                 //This is the message we receive through port 3000
                 systemMessage receivedSystemMessage;
 
@@ -70,13 +70,18 @@ public class mainWindowActions {
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
                     System.out.println("Waiting for a packet reception");
+                    Object systemMsg = null;
                     //Recover the datagram sent by client
-                    serverSocket.receive(packet);
-                    ByteArrayInputStream inStream = new ByteArrayInputStream(packet.getData());
-                    ObjectInput inObj = new ObjectInputStream(inStream);
-                    Object systemMsg = inObj.readObject();
+                    try {
+                        serverSocket.receive(packet);
+                        ByteArrayInputStream inStream = new ByteArrayInputStream(packet.getData());
+                        ObjectInput inObj = new ObjectInputStream(inStream);
+                        systemMsg = inObj.readObject();
+                    } catch (IOException | ClassNotFoundException e){
+                        e.printStackTrace();
+                    }
 
-                    if (systemMsg.getClass().toString().equals("class Software.systemMessage")) {
+                    if (systemMsg != null && systemMsg.getClass().toString().equals("class Software.systemMessage")) {
 
                         receivedSystemMessage = (systemMessage) systemMsg;
 
@@ -84,7 +89,12 @@ public class mainWindowActions {
                         instruction = receivedSystemMessage.instruction;
                         otherUser = receivedSystemMessage.userData;
                         theirUsername = otherUser.getUsername();
-                        address = InetAddress.getByName(receivedSystemMessage.userData.getIPAddress());
+                        try {
+                            address = InetAddress.getByName(receivedSystemMessage.userData.getIPAddress());
+                        } catch (UnknownHostException uhe){
+                            address = null;
+                            uhe.printStackTrace();
+                        }
                         port = receivedSystemMessage.port;
 
                         System.out.println("System message received with instruction " + instruction);
@@ -121,8 +131,11 @@ public class mainWindowActions {
                             case "hello":
                                 System.out.println("Received sendHello message... Adding new user with username " + theirUsername);
                                 systemMessageSender systemMessageSender = new systemMessageSender();
-                                systemMessageSender.sendSystemMessage(new systemMessage("hi", myself, port), InetAddress.getByName(otherUser.getIPAddress()), false, 2002);
-
+                                try {
+                                    systemMessageSender.sendSystemMessage(new systemMessage("hi", myself, port), InetAddress.getByName(otherUser.getIPAddress()), false, 2002);
+                                } catch (UnknownHostException uhe){
+                                    uhe.printStackTrace();
+                                }
                                 //Update the activeList table
                                 userList.addElement(otherUser);
 
@@ -133,12 +146,8 @@ public class mainWindowActions {
                         }
                     }
                 }
-            }  catch (IOException io) {
-                System.out.println("Error while setting up the socket for the message recovery");
-                io.printStackTrace();
-            } catch (ClassNotFoundException cnfe) {
-                System.out.println("Error : class was not found");
-                cnfe.printStackTrace();
+            } catch (SocketException se){
+                se.printStackTrace();
             }
         });
         messageReception.start();
