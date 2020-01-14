@@ -1,12 +1,13 @@
 package Software.Message;
 
-import java.awt.*;
+import java.io.File;
 
 public class imageMessage extends message{
-    public Image image;
+    public static File image;
 
-    public imageMessage(Image i){
+    public imageMessage(File i){
         super();
         image = i;
     }
+
 }
