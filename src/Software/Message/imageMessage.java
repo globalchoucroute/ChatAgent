@@ -3,7 +3,7 @@ package Software.Message;
 import java.io.File;
 
 public class imageMessage extends message{
-    public static File image;
+    public File image;
 
     public imageMessage(File i){
         super();

@@ -360,6 +360,7 @@ public class session extends JFrame {
                 titledBorder.setTitleJustification(TitledBorder.LEFT);
                 titledBorder.setTitleColor(Color.red);
             }
+
             messagePanel.setBackground(Color.white);
             messageText.setPreferredSize(new Dimension(430, 50));
             messageText.setMaximumSize(messageText.getPreferredSize());
@@ -373,26 +374,10 @@ public class session extends JFrame {
             messagePanel.setMaximumSize(messagePanel.getPreferredSize());
         }
         else if (message instanceof fileMessage) {
-
+            FilePanel filePanel = new FilePanel(((fileMessage) message).file, this);
         }
         else if (message instanceof imageMessage) {
-            BufferedImage image = null;
-            try {
-                image = ImageIO.read(new File(String.valueOf(((imageMessage) message).image)));
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-            JLabel picLabel = new JLabel(new ImageIcon(image));
-            int height = image.getHeight();
-            int width = image.getWidth();
-            int ratio = width/height;
-            int nHeight = 300;
-            int nWidth = nHeight*ratio;
-            picLabel.setPreferredSize(new Dimension(nWidth,nHeight));
-            messagePanel.add(picLabel, BorderLayout.CENTER);
-
-            messagePanel.setMaximumSize(new Dimension(nWidth + 50, nHeight + 50));
-
+            ImagePanel imagePanel = new ImagePanel(((imageMessage) message).image, this);
         }
 
         messageDisplayPane.add(messagePanel);

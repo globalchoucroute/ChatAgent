@@ -10,7 +10,6 @@ public class contactList extends JPanel {
     //Attributes
     private DefaultListModel<String> listModel;
     JList<String> contacts;
-    private JScrollPane container;
 
     //Constructor
     contactList(userList userList) {
@@ -23,7 +22,7 @@ public class contactList extends JPanel {
         contacts.setLayoutOrientation(JList.VERTICAL);
         contacts.setVisibleRowCount(4);
 
-        container = new JScrollPane(contacts);
+        JScrollPane container = new JScrollPane(contacts);
         /*container.setLayout(new BoxLayout(container, BoxLayout.LINE_AXIS));
         container.setBackground(Color.red);
         container.setPreferredSize(new Dimension(100,200));*/
