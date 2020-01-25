@@ -2,37 +2,62 @@ package Software;
 
 import java.util.ArrayList;
 import Session.session;
+
+/**
+ * sessionTable class. Its only attribute is a list containing every active session. Every time we need to find a certain session, we check the elements of the list.
+ */
 public class sessionTable {
+
     //Attributes
-    public ArrayList list;
+    private ArrayList list;
 
     public sessionTable (){
         list = new ArrayList();
     }
 
-    public void addSession(session session){
+    /**
+     * Adds the parameter to the opened sessions list.
+     * @param session The session that will be added to the list.
+     */
+    void addSession(session session){
         list.add(session);
     }
 
-    public session getSessionByName(String username){
-        for (int i = 0; i<list.size(); i++){
-            System.out.println("Currently checking the session with user " + ((session)list.get(i)).getOtherUserData().getUsername());
-            System.out.println("Do we have " + username + " = " + ((session)list.get(i)).getOtherUserData().getUsername() + " ?");
-            if (((session)list.get(i)).getOtherUserData().getUsername().equals(username)){
-                System.out.println("Yes we do !");
-                return ((session) list.get(i));
+    /**
+     * Finds the opened session associated the the received userData (its mac address). When found, calls the updateOtherUserdata method from the
+     * session class.
+     * @param newUserdata The freshly received userData containing the user's new username
+     *
+     */
+    void updateSessionOtherUserdata(userData newUserdata){
+        for (Object o : list) {
+            if (((session) o).getOtherUserData().getMacAddress().equals(newUserdata.getMacAddress())) {
+                ((session) o).updateOtherUserdata(newUserdata);
             }
         }
-        return null;
     }
 
-    public void closeSession(String username){
-        for (int i = 0; i<list.size(); i++){
-            System.out.println("Currently checking the session with user " + ((session)list.get(i)).getOtherUserData().getUsername());
-            System.out.println("Do we have " + username + " = " + ((session)list.get(i)).getOtherUserData().getUsername() + " ?");
-            if (((session)list.get(i)).getOtherUserData().getUsername().equals(username)){
-                System.out.println("Yes we do !");
-                ((session) list.get(i)).closeSession();
+    public boolean isEmpty(){
+        return list.isEmpty();
+    }
+    public int length(){
+        return list.size();
+    }
+    public session element(int index){
+        return (session) list.get(index);
+    }
+
+    /**
+     * Finds the opened session associated to the received mac address. When found, calls the closeSession method from the session class in order to close it.
+     * Also removes the session from the table.
+     * @param mac The mac address corresponding to the user asking for a session close
+     */
+    void closeSession(String mac){
+        for (Object o : list) {
+            if (((session) o).getOtherUserData().getMacAddress().equals(mac)) {
+                ((session) o).closeSession();
+                list.remove(o);
+                break;
             }
         }
     }

@@ -13,32 +13,37 @@ public class ImagePanel extends JPanel implements MouseListener {
     private File file;
     private Component parent;
 
-    public ImagePanel(File i, Component p){
+    ImagePanel(File i, Component p, boolean isMe){
         file = i;
         parent = p;
-
+        setBackground(Color.white);
         BufferedImage image = null;
         try {
             image = ImageIO.read(file);
         } catch (IOException e) {
-            System.out.println("Image illisible");
+            System.out.println("Can't read the image file");
             e.printStackTrace();
         }
 
         //resize the image
+        assert image != null;
         int h = image.getHeight(null);
         int w = image.getWidth(null);
         float r = (float) (w * 1.0 / h);
-        int nH = 150;
+        int nH = 200;
         int nW = (int) (r * nH);
         ImageIcon scaled = new ImageIcon(image.getScaledInstance(nW, nH, Image.SCALE_FAST));
 
         JLabel img_pnl = new JLabel(scaled);
-        this.add(img_pnl);
-        this.addMouseListener(this);
+        add(img_pnl);
+        addMouseListener(this);
 
-        this.setMaximumSize(img_pnl.getPreferredSize());
-        this.setAlignmentX(Component.LEFT_ALIGNMENT);
+        setMaximumSize(img_pnl.getPreferredSize());
+        if (isMe){
+            setAlignmentX(Component.RIGHT_ALIGNMENT);
+        } else {
+            setAlignmentX(Component.LEFT_ALIGNMENT);
+        }
     }
 
     @Override
@@ -51,8 +56,8 @@ public class ImagePanel extends JPanel implements MouseListener {
         if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
             File dir = chooser.getCurrentDirectory();
 
-            InputStream is = null;
-            OutputStream os = null;
+            InputStream is;
+            OutputStream os;
             try {
                 is = new FileInputStream(file);
                 os = new FileOutputStream(new File(dir + "/" + file.getName()));
@@ -82,11 +87,11 @@ public class ImagePanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 }

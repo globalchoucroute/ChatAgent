@@ -1,14 +1,23 @@
 package GUI;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import Software.connection;
 import Software.sessionTable;
@@ -16,10 +25,8 @@ import Software.userList;
 
 public class connectionWindow extends JFrame {
 
-    //Attributes
-    public JButton connectButton = new JButton("Connect");
-    public JTextField userNameField = new JTextField("");
-    public JFrame parent;
+    private JTextField userNameField = new JTextField("");
+    private JFrame parent;
 
     //Constructor
     public connectionWindow (){
@@ -35,9 +42,9 @@ public class connectionWindow extends JFrame {
         chatAgentPanel.add(title);
         chatAgentPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         chatAgentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        chatAgentPanel.setPreferredSize(new Dimension(330,30));
+        chatAgentPanel.setPreferredSize(new Dimension(380,30));
         //setPreferredSize(new Dimension(330, 80));
-        setPreferredSize(new Dimension(330,160));
+        setPreferredSize(new Dimension(380,180));
         setResizable(false);
         parent = this;
 
@@ -45,7 +52,7 @@ public class connectionWindow extends JFrame {
         JPanel username = new JPanel();
         username.setAlignmentY(Component.CENTER_ALIGNMENT);
         username.setBorder(border);
-        username.setPreferredSize(new Dimension(330, 20));
+        username.setPreferredSize(new Dimension(380, 20));
         JLabel enter = new JLabel("<html><p style = 'font-size:100%;font-family:Calibri;'>Please enter your username : </p></html>");
         username.add(enter, BorderLayout.WEST);
         username.add(userNameField, BorderLayout.EAST);
@@ -58,8 +65,10 @@ public class connectionWindow extends JFrame {
 
         JPanel buttonPane = new JPanel();
         buttonPane.setBorder(new EmptyBorder(2,2,2,2));
+        //Attributes
+        JButton connectButton = new JButton("Connect");
         buttonPane.add(connectButton);
-        buttonPane.setPreferredSize(new Dimension(330,20));
+        buttonPane.setPreferredSize(new Dimension(380,20));
         connectButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         connectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         connectButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -89,21 +98,18 @@ public class connectionWindow extends JFrame {
              }
          });
 
-        connectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = userNameField.getText();
-                if (username != null && !username.equals("")){
-                    if(connection.checkUsername(username)){
-                        userList userList = connection.sendHello(username);
-                        new mainWindow(connection.getPersonalUserData(), userList, new sessionTable());
-                        setVisible(false);
-                        dispose();
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(parent, "This username is already taken !");
-                        connection.setControlTrue();
-                    }
+        connectButton.addActionListener(e -> {
+            String username1 = userNameField.getText();
+            if (username1 != null && !username1.equals("")){
+                if(connection.checkUsername(username1)){
+                    userList userList = connection.sendHello(username1);
+                    new mainWindow(connection.getPersonalUserData(), userList, new sessionTable());
+                    setVisible(false);
+                    dispose();
+                }
+                else {
+                    JOptionPane.showMessageDialog(parent, "This username is already taken !");
+                    connection.setControlTrue();
                 }
             }
         });

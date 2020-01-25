@@ -1,7 +1,5 @@
 package Software;
 
-import GUI.chatWindow;
-
 import Session.session;
 import java.util.ArrayList;
 

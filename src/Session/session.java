@@ -8,25 +8,36 @@ import Software.systemMessage;
 import Software.systemMessageSender;
 import Software.userData;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import javax.xml.crypto.Data;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.dnd.DropTarget;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -46,16 +57,13 @@ public class session extends JFrame {
     public String username;
     private userData otherUserData;
     private JTextField text = new JTextField("Write a message...");
-    private Socket connectionSocket;
-    private BufferedReader bufferIn;
     private JPanel messageDisplayPane;
     private JScrollPane messageArea;
 
     //Attributes for the message fetching
-    private JSONArray jsonArray;
+    private JSONArray chatHistory;
     private JSONObject jsonObject;
     private String userPath;
-
     static class Connected {
         volatile boolean isConnected = true;
         boolean getConnected () {
@@ -67,10 +75,11 @@ public class session extends JFrame {
     }
     private final Connected controlConnected = new Connected();
 
-    //Constructor. Will display the new window and start the reception thread.
+    //Constructor. Will display the new window, fetch the message history and start the reception thread.
     public session(userData myself, userData otherUser, int port,  boolean isServer){
         super();
 
+        setLocationRelativeTo(null);
         username = myself.getUsername();
 
         StringBuilder correctPathName = new StringBuilder();
@@ -85,34 +94,6 @@ public class session extends JFrame {
         otherUserData = otherUser;
         String otherUsername = otherUser.getUsername();
         userPath = "conversationData/" + correctPathName + ".json";
-        //messagesFile = new File(userPath);
-
-
-        //*****************************************************
-        // THIS IS THE PART CONCERNING THE MESSAGE FETCH
-        //*****************************************************
-        /*try {
-            jsonObject = (JSONObject) new JSONParser().parse(new FileReader(userPath));
-            jsonArray = (JSONArray) jsonObject.get("messages");
-            for (Object o : jsonArray){
-                JSONObject messageData = (JSONObject) o;
-                String message = (String) messageData.get("message");
-                String isMe = (String) messageData.get("flag");
-                if (isMe.equals("1")){
-                    messageDisplay.append("\n" + username + " : " + message);
-                }
-                else if (isMe.equals("0")){
-                    messageDisplay.append("\n" + otherUsername + " : " + message);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            //The file does not exist, we create it
-            jsonObject = new JSONObject();
-            jsonArray = new JSONArray();
-            jsonObject.put("messages", jsonArray);
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }*/
 
         //*****************************************************
         // THIS IS THE PART CONCERNING THE WINDOW DISPLAY
@@ -122,7 +103,6 @@ public class session extends JFrame {
         messageDisplayPane.setBackground(Color.white);
 
         setBackground(Color.white);
-;
         new DropTarget(this, new dropListener(this));
 
         JButton sendButton = new JButton("Send");
@@ -150,7 +130,7 @@ public class session extends JFrame {
         textAreaPanel.setPreferredSize(new Dimension(350,40));
 
         messageArea.setPreferredSize(new Dimension(400, 300));
-        setPreferredSize(new Dimension(600,500));
+        setPreferredSize(new Dimension(500,400));
 
         add(messageArea, BorderLayout.NORTH);
         add(textAreaPanel, BorderLayout.SOUTH);
@@ -168,17 +148,7 @@ public class session extends JFrame {
                         systemMessageSender systemMessageSender = new systemMessageSender();
                         systemMessage systemMessage = new systemMessage("disconnect", myself, 0 );
                         systemMessageSender.sendSystemMessage(systemMessage, InetAddress.getByName(otherUserData.getIPAddress()), false, 3000);
-                        controlConnected.disconnect();
-                        System.out.println("Turned the controller to false");
-                        dispose();
-                        /*try (FileWriter file = new FileWriter(userPath)){
-                            file.write(jsonObject.toJSONString());
-                            file.flush();
-                        } catch (IOException oskour) {
-                            System.out.println("Error while writing in the json file");
-                            oskour.printStackTrace();
-                        }*/
-                        //connectionThread.join();
+                        closeSession();
                     } catch (UnknownHostException he){
                         System.out.println("Unknown host for the disconnect message");
                         he.printStackTrace();
@@ -225,9 +195,37 @@ public class session extends JFrame {
         //*****************************************************
 
         //*****************************************************
+        // THIS IS THE PART CONCERNING THE MESSAGE FETCH
+        //*****************************************************
+        try {
+            jsonObject = (JSONObject) new JSONParser().parse(new FileReader(userPath));
+            chatHistory = (JSONArray) jsonObject.get("messages");
+        } catch (FileNotFoundException e) {
+            jsonObject = new JSONObject();
+            chatHistory = new JSONArray();
+            jsonObject.put("messages", chatHistory);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        for (Object o : chatHistory) {
+            JSONObject current = (JSONObject) o;
+            String message = (String) current.get("message");
+            String isMe = (String) current.get("flag");
+            String timestamp = (String) current.get("timestamp");
+            if (isMe.equals("1")) {
+                addMessage(true, new textMessage(message), timestamp);
+            } else if (isMe.equals("0")) {
+                addMessage(false, new textMessage(message), timestamp);
+            }
+        }
+
+
+        //*****************************************************
         // THIS IS THE PART CONCERNING THE TCP PROTOCOL
         //*****************************************************
         try {
+            Socket connectionSocket;
             if (isServer) {
                 ServerSocket serverSocket = new ServerSocket(port);
                 System.out.println("Message before accept");
@@ -237,7 +235,6 @@ public class session extends JFrame {
                 try {Thread.sleep(100);} catch (InterruptedException ie) {ie.printStackTrace();}
                 connectionSocket = new Socket(InetAddress.getByName(otherUser.getIPAddress()), port);
             }
-            //this.out = new PrintWriter(connectionSocket.getOutputStream(), true);
             this.out = new ObjectOutputStream(connectionSocket.getOutputStream());
             this.in = new ObjectInputStream(connectionSocket.getInputStream());
 
@@ -245,19 +242,15 @@ public class session extends JFrame {
             Thread connectionThread = new Thread(() -> {
                 try {
                     message message = null;
-                    //bufferIn = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                     while (controlConnected.getConnected()) {
                         try {
                             message = (message) in.readObject();
                         } catch (ClassNotFoundException e) {e.printStackTrace();}
-                        //String message = bufferIn.readLine();
                         if (message != null) {
-                            addMessage(false, message);
-                            JSONObject jsonMessage = new JSONObject();
-                            /*jsonMessage.put("message", message);
-                            jsonMessage.put("timestamp", timestamp);
-                            jsonMessage.put("flag", 0);
-                            jsonArray.add(jsonMessage);*/
+                            Date date = new Date();
+                            String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+                            addMessage(false, message, timestamp);
+                            log(false, ((textMessage) message).content, timestamp);
                         }
                     }
                 } catch (IOException e) {
@@ -276,24 +269,24 @@ public class session extends JFrame {
 
 
     private void sendMessage(message message){
+        Date date = new Date();
+        String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
         try{
             out.writeObject(message);
             out.flush();
         } catch(IOException e){
             e.printStackTrace();
         }
-        JSONObject jsonMessage = new JSONObject();
         if (message != null) {
-            addMessage(true, message);
-            /*jsonMessage.put("message", message);
-            jsonMessage.put("timestamp", timestamp);
-            jsonMessage.put("flag", 1);
-            jsonArray.add(jsonMessage);*/
+            addMessage(true, message, timestamp);
+            log(true, ((textMessage) message).content, timestamp);
         }
     }
 
-    public void sendFile(File file){
-        String[] supportedImageFormats = {"png", "jpg", "gif", "jpeg"};
+    void sendFile(File file){
+        Date date = new Date();
+        String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+        String[] supportedImageFormats = {"png", "jpg", "gif", "jpeg","PNG","JPG","JPEG","GIF"};
         String extension = getExtension(file.getName());
         boolean isImage = Arrays.asList(supportedImageFormats).contains(extension);
         if (isImage) {
@@ -303,6 +296,7 @@ public class session extends JFrame {
             } catch (IOException e){
                 e.printStackTrace();
             }
+            addMessage(true, mainMessage, timestamp);
         }
         else {
             mainMessage = new fileMessage(file);
@@ -311,6 +305,7 @@ public class session extends JFrame {
             } catch (IOException e){
                 e.printStackTrace();
             }
+            addMessage(true, mainMessage, timestamp);
         }
     }
 
@@ -334,53 +329,57 @@ public class session extends JFrame {
         return username;
     }
 
-    private void addMessage(boolean isMe, message message){
-        JPanel messagePanel = new JPanel();
+    public void updateOtherUserdata(userData newOtherUserdata){
+        otherUserData = newOtherUserdata;
+    }
+
+    private void addMessage(boolean isMe, message message, String timestamp){
+        Border border;
+        TitledBorder titledBorder;
+        JPanel wrappingPanel = new JPanel();
+        wrappingPanel.setBackground(Color.white);
+        wrappingPanel.setLayout(new BoxLayout(wrappingPanel, BoxLayout.LINE_AXIS));
+
+        if (isMe) {
+            border = BorderFactory.createLineBorder(Color.blue,2,true);
+            titledBorder = BorderFactory.createTitledBorder(border, "You :");
+            titledBorder.setTitleJustification(TitledBorder.RIGHT);
+            titledBorder.setTitleColor(Color.blue);
+        } else {
+            border = BorderFactory.createLineBorder(Color.red,2,true);
+            titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
+            titledBorder.setTitleJustification(TitledBorder.LEFT);
+            titledBorder.setTitleColor(Color.red);
+        }
 
         if (message instanceof textMessage) {
-            Date date = new Date();
-            String testTimestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
-
-            JTextArea messageText = new JTextArea(((textMessage) message).content);
-            messageText.setEditable(false);
-            messageText.setLineWrap(true);
-            messageText.setWrapStyleWord(true);
-            messageText.setBackground(Color.white);
-            Border border;
-            TitledBorder titledBorder;
-            if (isMe) {
-                border = BorderFactory.createLineBorder(Color.blue);
-                titledBorder = BorderFactory.createTitledBorder(border, "You :");
-                titledBorder.setTitleJustification(TitledBorder.RIGHT);
-                titledBorder.setTitleColor(Color.blue);
-                messageText.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-            } else {
-                border = BorderFactory.createLineBorder(Color.red);
-                titledBorder = BorderFactory.createTitledBorder(border, otherUserData.getUsername() + " :");
-                titledBorder.setTitleJustification(TitledBorder.LEFT);
-                titledBorder.setTitleColor(Color.red);
-            }
-
-            messagePanel.setBackground(Color.white);
-            messageText.setPreferredSize(new Dimension(430, 50));
-            messageText.setMaximumSize(messageText.getPreferredSize());
-
-            messagePanel.setToolTipText(testTimestamp);
-
-            messagePanel.setBorder(titledBorder);
-            messagePanel.add(messageText);
-
-            messagePanel.setPreferredSize(new Dimension((int) messageText.getMaximumSize().getWidth() + 20, (int) messageText.getMaximumSize().getHeight() + 30));
-            messagePanel.setMaximumSize(messagePanel.getPreferredSize());
+            String content = ((textMessage) message).content;
+            TextPanel textPanel = new TextPanel(content);
+            textPanel.setToolTipText(timestamp);
+            wrappingPanel.setPreferredSize(new Dimension(400, textPanel.getHeightRatio() * 15 + 20));
+            wrappingPanel.setMaximumSize(new Dimension(400, (int) wrappingPanel.getPreferredSize().getHeight()));
+            wrappingPanel.setBorder(titledBorder);
+            wrappingPanel.add(textPanel);
         }
         else if (message instanceof fileMessage) {
             FilePanel filePanel = new FilePanel(((fileMessage) message).file, this);
+            filePanel.setToolTipText(timestamp);
+            wrappingPanel.setPreferredSize(new Dimension(400, filePanel.getHeight() + 30));
+            wrappingPanel.setMaximumSize(new Dimension(400, (int) wrappingPanel.getPreferredSize().getHeight()));
+            wrappingPanel.setBorder(titledBorder);
+            wrappingPanel.add(filePanel);
         }
         else if (message instanceof imageMessage) {
-            ImagePanel imagePanel = new ImagePanel(((imageMessage) message).image, this);
+            ImagePanel imagePanel = new ImagePanel(((imageMessage) message).image, this, isMe);
+            imagePanel.setToolTipText(timestamp);
+            wrappingPanel.setPreferredSize(new Dimension(400, (int)imagePanel.getPreferredSize().getHeight() + 30));
+            wrappingPanel.setMaximumSize(new Dimension(400, (int) wrappingPanel.getPreferredSize().getHeight()));
+            wrappingPanel.setBorder(titledBorder);
+            wrappingPanel.add(imagePanel);
         }
 
-        messageDisplayPane.add(messagePanel);
+        wrappingPanel.setToolTipText(timestamp);
+        messageDisplayPane.add(wrappingPanel);
         messageDisplayPane.validate();
         messageDisplayPane.repaint();
         messageArea.validate();
@@ -388,19 +387,36 @@ public class session extends JFrame {
 
     }
 
+    private void log(boolean isMe, String content, String timestamp){
+        JSONObject entry = new JSONObject();
+        entry.put("message", content);
+        if (isMe) {
+            entry.put("flag", "1");
+        } else {
+            entry.put("flag", "0");
+        }
+        entry.put("timestamp", timestamp);
+        chatHistory.add(entry);
+        saveLog();
+    }
+
+    private void saveLog(){
+        PrintWriter p;
+        try {
+            p = new PrintWriter(userPath);
+            p.write(jsonObject.toJSONString());
+            p.flush();
+            p.close();
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+    }
 
     public void closeSession(){
         System.out.println("Entered the closeSession method...");
         controlConnected.disconnect();
         System.out.println("Turned the controller to false");
         this.dispose();
-        /*try (FileWriter file = new FileWriter(userPath)){
-            file.write(jsonObject.toJSONString());
-            file.flush();
-        } catch (IOException oskour) {
-            System.out.println("Error while writing in the json file");
-            oskour.printStackTrace();
-        }*/
     }
 
 }

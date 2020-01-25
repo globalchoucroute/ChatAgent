@@ -3,10 +3,15 @@ package Software;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class systemMessageSender {
 
+    //This class will be used when sending a system message to the other users
     public systemMessageSender(){}
 
     public void sendSystemMessage(systemMessage systemMessage, InetAddress destination, boolean isBroadcast, int port) {
@@ -14,12 +19,12 @@ public class systemMessageSender {
         try {
             //Set up for the serialized message send
             DatagramSocket socket = new DatagramSocket();
-            ByteArrayOutputStream outByte = null;
+            ByteArrayOutputStream outByte;
 
             //Send the serialized message to other listening users (listening is made in a separate thread on port 3000)
             try {
                 outByte = new ByteArrayOutputStream();
-                byte[] objectSerialized = null;
+                byte[] objectSerialized;
                 ObjectOutputStream objOut = new ObjectOutputStream(outByte);
                 objOut.writeObject(systemMessage);
                 objectSerialized = outByte.toByteArray();

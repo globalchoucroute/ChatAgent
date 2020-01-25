@@ -5,21 +5,25 @@ import Software.sessionTable;
 import Software.userData;
 import Software.userList;
 
-import javax.swing.*;
-import java.awt.BorderLayout;
-import java.net.DatagramSocket;
-import Session.session;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 public class userActions extends JPanel {
 
     private JLabel userName = new JLabel();
     public String username;
     private static int port = 5000;
-    public mainWindowActions mainWindowActions;
+    mainWindowActions mainWindowActions;
 
     userActions(JList L, userData myself, mainWindow parent, userList userList, sessionTable sessionTable){
         super();
         username = myself.getUsername();
-        userName.setText("Logged in as " + username);
+        JLabel title = new JLabel("<html><h1 style = 'font-size:140%;font-family:Calibri;'> Welcome to ChatAgent </h1></html>");
+        userName.setText("Currently logged in as " + username);
         mainWindowActions = new mainWindowActions(myself, userList, sessionTable);
 
         //Starts a session with the selected user when the button is clicked
@@ -31,11 +35,8 @@ public class userActions extends JPanel {
                 try {
                     //When the user starts a session, a new Window appears
                     //The second argument starts a new UDP session
-                    DatagramSocket beginSessionNotifySocket = new DatagramSocket(4999);
                     userData otherUserData = userList.getUserByName((String) L.getSelectedValue());
-                    mainWindowActions.beginChatSession(port, otherUserData, beginSessionNotifySocket, sessionTable);
-                    //new chatWindow(username, (String) L.getSelectedValue(), mainWindowActions.beginSession(username, port, otherUserData, beginSessionNotifySocket));
-                    beginSessionNotifySocket.close();
+                    mainWindowActions.beginChatSession(port, otherUserData, sessionTable);
                     port++;
                 } catch (Exception ex) {
                     System.out.println("Failed to begin the session (userActions)");
@@ -52,13 +53,13 @@ public class userActions extends JPanel {
         changeUsernamePane.add(changeUsername);
         changeUsername.addActionListener(e -> new changeUsernameWindow(parent));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(startSessionPane);
+        add(title);
         add(userName);
         add(changeUsernamePane);
-
+        add(startSessionPane);
     }
 
-    public void changeUsername(String name){
+    void changeUsername(String name){
         username = name;
         userName.setText("Logged in as " + name);
     }

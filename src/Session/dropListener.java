@@ -2,16 +2,20 @@ package Session;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class dropListener implements DropTargetListener {
 
-    session session;
+    private session session;
 
-    public dropListener(session s) {
+    dropListener(session s) {
         session = s;
     }
 

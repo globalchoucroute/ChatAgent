@@ -1,13 +1,18 @@
 package GUI;
 
+import Session.session;
 import Software.sessionTable;
 import Software.systemMessage;
 import Software.systemMessageSender;
 import Software.userData;
 import Software.userList;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -26,12 +31,12 @@ public class mainWindow extends JFrame {
         username = myself.getUsername();
         GUI.contactList contactList = new contactList(usersList);
         this.userActions = new userActions(contactList.contacts, myself, this, usersList, sessionTable);
-        userActions.setAlignmentX(Component.CENTER_ALIGNMENT);
+        userActions.setAlignmentX(Component.LEFT_ALIGNMENT);
         ImageIcon icon = new ImageIcon("images/icon.png");
         setIconImage(icon.getImage());
 
         add(contactList, BorderLayout.WEST);
-        add(userActions, BorderLayout.CENTER);
+        add(userActions, BorderLayout.EAST);
         setPreferredSize(new Dimension(400,200));
         setMinimumSize(new Dimension(200,200));
         setLocationRelativeTo(null);
@@ -48,6 +53,14 @@ public class mainWindow extends JFrame {
                 if (confirm == 0){
                     try {
                         systemMessageSender systemMessageSender = new systemMessageSender();
+                        if (!sessionTable.isEmpty()){
+                            for (int i = 0; i <sessionTable.length(); i++){
+                                session currentSession = sessionTable.element(i);
+                                String ip = currentSession.getOtherUserData().getIPAddress();
+                                systemMessageSender.sendSystemMessage(new systemMessage("disconnect", myself, 0), InetAddress.getByName(ip), false, 3000);
+                                currentSession.closeSession();
+                            }
+                        }
                         systemMessageSender.sendSystemMessage(new systemMessage("bye", myself, 0), InetAddress.getByName("255.255.255.255"), true, 3000);
                     } catch (UnknownHostException uhe) {
                         uhe.printStackTrace();
