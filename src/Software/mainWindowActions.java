@@ -144,6 +144,12 @@ public class mainWindowActions {
 
     }
 
+    /**
+     * Sends a system message asking the other user to start a chat session.
+     * @param port is the port on which the session should be started.
+     * @param otherUserData is the data of the user we're sending the message to.
+     * @param sessionTable is the general session table. When starting a session, we also need to add it to the table.
+     */
     public void beginChatSession(int port, userData otherUserData, sessionTable sessionTable){
         try {
             systemMessageSender systemMessageSender = new systemMessageSender();
@@ -156,6 +162,11 @@ public class mainWindowActions {
         }
     }
 
+    /**
+     * Checks if the desired username is available by checking through the entire user list. In case it is, sends a system message informing the other
+     * users of the change.
+     * @param newName is the new username the user would like to take.
+     */
     public void changeUsername(String newName){
         if (userList.getUserByName(newName) == null){
             try {

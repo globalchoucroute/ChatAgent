@@ -1,22 +1,41 @@
 package Session;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * This class will be needed when a user sends or receives a file that is not an image. It's a personalized JPanel.
+ */
 public class FilePanel extends JPanel implements MouseListener {
     private static final long serialVersionUID = 3339L;
     private File file;
     private Component parent;
 
-    public FilePanel (File f, Component p){
+    /**
+     * Standard constructor for the FilePanel. Will build a JPanel containing the clickeable file.
+     * @param f is the file we'll display in the panel.
+     * @param p is the parent container in which we'll display it.
+     */
+    FilePanel (File f, Component p){
         super (new BorderLayout());
         file = f;
         parent = p;
@@ -46,7 +65,11 @@ public class FilePanel extends JPanel implements MouseListener {
         setMaximumSize(getPreferredSize());
     }
 
-    // converts bytes in a more readable unit
+    /**
+     * Converts bytes into a more readable unit.
+     * @param size is the original size, in bytes.
+     * @return the size of the parameter converted in GB.
+     */
     private String convertSize(long size) {
         String unit = "B";
         double s = size;
@@ -67,7 +90,10 @@ public class FilePanel extends JPanel implements MouseListener {
         return bd.doubleValue() + unit;
     }
 
-
+    /**
+     * Makes the user chose a save file when he clicks on the file.
+     * @param e is the event expected.
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         JFileChooser chooser = new JFileChooser();

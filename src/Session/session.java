@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -122,19 +123,23 @@ public class session extends JFrame {
         this.setTitle(otherUsername);
 
         sendButton.setMnemonic(KeyEvent.VK_ENTER);
-        sendButton.setPreferredSize(new Dimension(100, 40));
+        sendButton.setPreferredSize(new Dimension(96, 36));
+        sendButton.setBorder(new EmptyBorder(2,2,2,2));
         text.setPreferredSize(new Dimension(250,40));
 
         textAreaPanel.add(text, BorderLayout.WEST);
         textAreaPanel.add(sendButton, BorderLayout.EAST);
+        textAreaPanel.setBorder(new EmptyBorder(3,3,3,3));
         textAreaPanel.setPreferredSize(new Dimension(350,40));
 
         messageArea.setPreferredSize(new Dimension(400, 300));
         setPreferredSize(new Dimension(500,400));
 
-        add(messageArea, BorderLayout.NORTH);
-        add(textAreaPanel, BorderLayout.SOUTH);
+        setLayout(new BoxLayout(getContentPane(),BoxLayout.PAGE_AXIS));
+        add(messageArea);
+        add(textAreaPanel);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
 
         WindowListener exitListener = new WindowAdapter() {
             @Override
@@ -268,6 +273,10 @@ public class session extends JFrame {
     }
 
 
+    /**
+     * Sends a text message to the other user via the TCP connection.
+     * @param message is the message to be sent.
+     */
     private void sendMessage(message message){
         Date date = new Date();
         String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
@@ -283,6 +292,10 @@ public class session extends JFrame {
         }
     }
 
+    /**
+     * Sends a file (can be an image or a simple text file for example) to the other user via the tcp connection.
+     * @param file is the file to be sent.
+     */
     void sendFile(File file){
         Date date = new Date();
         String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
@@ -310,6 +323,12 @@ public class session extends JFrame {
     }
 
     //Getters/Setters
+
+    /**
+     * Finds the extension of a file, in order to determine if it is an image or not.
+     * @param filename is the name of the file (extension included).
+     * @return the extension in a String format.
+     */
     private String getExtension(String filename) {
         String extension = "";
 
@@ -333,6 +352,12 @@ public class session extends JFrame {
         otherUserData = newOtherUserdata;
     }
 
+    /**
+     * Adds a message to the chat window. The message can be either a text or a file (image or other).
+     * @param isMe determines who sent the message.
+     * @param message is the message to be displayed.
+     * @param timestamp is the time at which the message has been sent.
+     */
     private void addMessage(boolean isMe, message message, String timestamp){
         Border border;
         TitledBorder titledBorder;
@@ -387,6 +412,12 @@ public class session extends JFrame {
 
     }
 
+    /**
+     * Creates and add an entry to our chat history. Only activated when sending or receiving text messages.
+     * @param isMe determines which user sent the message.
+     * @param content is the content of the text message.
+     * @param timestamp is the time at which the message has been sent.
+     */
     private void log(boolean isMe, String content, String timestamp){
         JSONObject entry = new JSONObject();
         entry.put("message", content);
@@ -400,6 +431,9 @@ public class session extends JFrame {
         saveLog();
     }
 
+    /**
+     * Writes down the logs in the JSON file. This function is called every time we log a message, to make sure everything we be logged properly.
+     */
     private void saveLog(){
         PrintWriter p;
         try {
@@ -412,6 +446,9 @@ public class session extends JFrame {
         }
     }
 
+    /**
+     * Close the session by turning down the controller in the message reception thread.
+     */
     public void closeSession(){
         System.out.println("Entered the closeSession method...");
         controlConnected.disconnect();

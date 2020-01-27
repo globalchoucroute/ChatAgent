@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Will allow the user to add files (images for instance) in the conversation to send them.
+ */
 public class dropListener implements DropTargetListener {
 
     private session session;
@@ -38,6 +41,7 @@ public class dropListener implements DropTargetListener {
     public void dragExit(DropTargetEvent dte) {
 
     }
+
 
     @Override
     public void drop(DropTargetDropEvent dtde) {

@@ -8,11 +8,20 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+/**
+ * This class will be needed when a user sends or receives an image. It's a personalized JPanel.
+ */
 public class ImagePanel extends JPanel implements MouseListener {
 
     private File file;
     private Component parent;
 
+    /**
+     * Standard constructor for the FilePanel. Will build a JPanel containing the clickeable file.
+     * @param i is the image we'll display in the panel.
+     * @param p is the parent container in which we'll display it.
+     * @param isMe determines on which side the image should be displayed (left or right, depending on the user sending it).
+     */
     ImagePanel(File i, Component p, boolean isMe){
         file = i;
         parent = p;
@@ -46,6 +55,10 @@ public class ImagePanel extends JPanel implements MouseListener {
         }
     }
 
+    /**
+     * Makes the user chose a save file when he clicks on the image.
+     * @param e is the event expected.
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         JFileChooser chooser = new JFileChooser();
