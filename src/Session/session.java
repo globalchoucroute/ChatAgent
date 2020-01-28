@@ -255,7 +255,9 @@ public class session extends JFrame {
                             Date date = new Date();
                             String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
                             addMessage(false, message, timestamp);
-                            log(false, ((textMessage) message).content, timestamp);
+                            if (message instanceof textMessage) {
+                                log(false, ((textMessage) message).content, timestamp);
+                            }
                         }
                     }
                 } catch (IOException e) {

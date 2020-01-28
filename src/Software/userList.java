@@ -45,7 +45,15 @@ public class userList {
         return (userData) list.get(index);
     }
 
-
+    public boolean isAvailable(String name) {
+        boolean control = true;
+        for (int i = 0; i < this.getLength(); i++) {
+            if (getUser(i).getUsername().equals(name)) {
+                control = false;
+            }
+        }
+        return control;
+    }
 
     //Initiate the list for the first connection
     public void addElementInit(userData userData){
@@ -80,8 +88,10 @@ public class userList {
     //Modify a username referenced from its mac address
     public void modifyUsername(String mac, String name){
         userData user = this.getUserByMac(mac);
+        GUIcontactList.deleteContact(user);
         int index = list.indexOf(user);
-        if (index != -1) list.set(index, new userData(name, mac, user.getIPAddress()));
+        userData updatedUser = new userData(name, mac, user.getIPAddress());
+        if (index != -1) list.set(index, updatedUser);
     }
 
     public void setGUIcontactList(contactList contactList){

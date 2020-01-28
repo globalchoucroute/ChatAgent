@@ -1,7 +1,13 @@
 package GUI;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import java.awt.Color;
+import java.awt.Dimension;
 
 import Software.userData;
 import Software.userList;
@@ -35,11 +41,6 @@ public class contactList extends JPanel {
     }
 
     //Methods
-    //Getters
-    public DefaultListModel getListElements (){
-        return this.listModel;
-    }
-
     //Setters
     private DefaultListModel initContactList(userList userList){
         for (int i = 0; i < userList.getLength(); i++){
@@ -54,11 +55,4 @@ public class contactList extends JPanel {
         listModel.addElement(userData.getUsername());
     }
 
-    public DefaultListModel updateList(userList userList){
-        for (int i = 0; i < userList.getLength(); i++){
-            listModel.addElement(userList.getUser(i).getUsername());
-        }
-
-        return listModel;
-    }
 }

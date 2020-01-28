@@ -21,6 +21,7 @@ public class sessionTable {
      */
     void addSession(session session){
         list.add(session);
+        for (int i = 0; i< list.size(); i++){System.out.println("Opened session number " + (i+1) + " with user " + ((session)list.get(i)).getOtherUserData().getUsername());}
     }
 
     /**
@@ -52,9 +53,10 @@ public class sessionTable {
      * Also removes the session from the table.
      * @param mac The mac address corresponding to the user asking for a session close
      */
-    void closeSession(String mac){
+    protected void closeSession(String mac){
         for (Object o : list) {
             if (((session) o).getOtherUserData().getMacAddress().equals(mac)) {
+                System.out.println("Found the correct session");
                 ((session) o).closeSession();
                 list.remove(o);
                 break;

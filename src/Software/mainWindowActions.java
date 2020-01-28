@@ -168,7 +168,7 @@ public class mainWindowActions {
      * @param newName is the new username the user would like to take.
      */
     public void changeUsername(String newName){
-        if (userList.getUserByName(newName) == null){
+        if (userList.isAvailable(newName)){
             try {
                 //Send the message via the systemMessageSender
                 systemMessageSender systemMessageSender = new systemMessageSender();

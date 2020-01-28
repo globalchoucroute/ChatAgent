@@ -38,7 +38,6 @@ public class mainWindow extends JFrame {
         add(contactList, BorderLayout.WEST);
         add(userActions, BorderLayout.EAST);
         setPreferredSize(new Dimension(400,200));
-        setMinimumSize(new Dimension(200,200));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 

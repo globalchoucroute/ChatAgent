@@ -9,7 +9,7 @@ class TextPanel extends JTextArea {
     TextPanel (String content){
         super();
         message = content;
-        setFont(new Font("Consolas", Font.PLAIN, 12));
+        setFont(new Font("Courier", Font.PLAIN, 12));
         setBackground(Color.white);
         setEditable(false);
         setLineWrap(true);
