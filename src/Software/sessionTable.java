@@ -2,6 +2,7 @@ package Software;
 
 import java.util.ArrayList;
 import Session.session;
+import Software.userData;
 
 /**
  * sessionTable class. Its only attribute is a list containing every active session. Every time we need to find a certain session, we check the elements of the list.
@@ -53,7 +54,7 @@ public class sessionTable {
      * Also removes the session from the table.
      * @param mac The mac address corresponding to the user asking for a session close
      */
-    protected void closeSession(String mac){
+    void closeSession(String mac){
         for (Object o : list) {
             if (((session) o).getOtherUserData().getMacAddress().equals(mac)) {
                 System.out.println("Found the correct session");

@@ -72,7 +72,7 @@ public class mainWindowActions {
 
                     if (systemMsg != null && systemMsg.getClass().toString().equals("class Software.systemMessage")) {
                         receivedSystemMessage = (systemMessage) systemMsg;
-                        if (!receivedSystemMessage.userData.getIPAddress().equals(myself.getIPAddress())){
+                        if (receivedSystemMessage.userData.getIPAddress().equals(myself.getIPAddress())){
                             //Set up the useful variables for later use
                             instruction = receivedSystemMessage.instruction;
                             otherUser = receivedSystemMessage.userData;

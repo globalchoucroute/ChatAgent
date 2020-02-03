@@ -196,7 +196,8 @@ public class session extends JFrame {
         });
 
         this.pack();
-        setVisible(true);
+        if (isServer){setVisible(true);}
+
         //*****************************************************
 
         //*****************************************************
@@ -247,11 +248,16 @@ public class session extends JFrame {
             Thread connectionThread = new Thread(() -> {
                 try {
                     message message = null;
+                    boolean temp = false;
                     while (controlConnected.getConnected()) {
                         try {
                             message = (message) in.readObject();
                         } catch (ClassNotFoundException e) {e.printStackTrace();}
                         if (message != null) {
+                            if (!temp){
+                                setVisible(true);
+                                temp = true;
+                            }
                             Date date = new Date();
                             String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
                             addMessage(false, message, timestamp);

@@ -8,9 +8,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import java.awt.Dimension;
-
-import Software.userData;
 import Software.userList;
+import Software.userData;
 public class contactList extends JPanel {
 
     //Attributes
