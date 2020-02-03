@@ -14,6 +14,13 @@ public class systemMessageSender {
     //This class will be used when sending a system message to the other users
     public systemMessageSender(){}
 
+    /**
+     * Sends a system message to one or all the users.
+     * @param systemMessage is the message to be sent.
+     * @param destination is the InetAddress of the person we wish to send the message to. It can be the local broadcast address.
+     * @param isBroadcast is true if we wish to send a broadcast message.
+     * @param port is the port we wish to send the message to.
+     */
     public void sendSystemMessage(systemMessage systemMessage, InetAddress destination, boolean isBroadcast, int port) {
 
         try {

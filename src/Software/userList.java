@@ -2,17 +2,15 @@ package Software;
 
 
 import GUI.contactList;
-
 import java.util.ArrayList;
-import java.util.Collections;
 
 //General class for the user list. It will be instantiated once at the beginning of the program, and will then be modified
 public class userList {
 
-    public ArrayList list;
-    public GUI.contactList GUIcontactList;
+    private ArrayList list;
+    private GUI.contactList GUIcontactList;
 
-    public userList(){
+    userList(){
         list = new ArrayList();
         GUIcontactList = null;
     }
@@ -32,7 +30,7 @@ public class userList {
         return null;
     }
 
-    public userData getUserByMac(String mac){
+    private userData getUserByMac(String mac){
         for (int i = 0; i < list.size(); i++) {
             if (getUser(i).getMacAddress().equals(mac)) {
                 return getUser(i);
@@ -45,7 +43,7 @@ public class userList {
         return (userData) list.get(index);
     }
 
-    public boolean isAvailable(String name) {
+    boolean isAvailable(String name) {
         boolean control = true;
         for (int i = 0; i < this.getLength(); i++) {
             if (getUser(i).getUsername().equals(name)) {
@@ -55,24 +53,17 @@ public class userList {
         return control;
     }
 
-    //Initiate the list for the first connection
-    public void addElementInit(userData userData){
-        list.add(userData);
-        System.out.println("Element added in the user list : " + userData.getUsername());
-        //Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
-    }
-
     //add an element to the list
-    public void addElement(userData userData){
+    void addElement(userData userData){
         list.add(userData);
         System.out.println("Element added in the user list : " + userData.getUsername());
         GUIcontactList.addContact(userData);
     }
 
     //Delete an element from the list
-    public void deleteElement(userData userData){
+    void deleteElement(userData userData){
         if (list.contains(userData)){
-            list.remove(list.indexOf(userData));
+            list.remove(userData);
             GUIcontactList.deleteContact(userData);
         }
     }
@@ -86,12 +77,14 @@ public class userList {
     }
 
     //Modify a username referenced from its mac address
-    public void modifyUsername(String mac, String name){
+    public void modifyUsername(String mac, String name) {
         userData user = this.getUserByMac(mac);
-        GUIcontactList.deleteContact(user);
-        int index = list.indexOf(user);
-        userData updatedUser = new userData(name, mac, user.getIPAddress());
-        if (index != -1) list.set(index, updatedUser);
+        if (user != null) {
+            GUIcontactList.deleteContact(user);
+            int index = list.indexOf(user);
+            userData updatedUser = new userData(name, mac, user.getIPAddress());
+            if (index != -1) list.set(index, updatedUser);
+        }
     }
 
     public void setGUIcontactList(contactList contactList){

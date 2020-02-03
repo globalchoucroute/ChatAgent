@@ -18,6 +18,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import GUI.userActions;
 
 public class mainWindow extends JFrame {
 
@@ -27,7 +28,7 @@ public class mainWindow extends JFrame {
     public String username;
     //Constructor
     mainWindow(userData myself, userList usersList, sessionTable sessionTable){
-        super("Chat Agent");
+        super("Chat Agent - " + myself.getUsername());
         username = myself.getUsername();
         GUI.contactList contactList = new contactList(usersList);
         this.userActions = new userActions(contactList.contacts, myself, this, usersList, sessionTable);
@@ -79,8 +80,14 @@ public class mainWindow extends JFrame {
     //Getters
 
     //Setters
+
+    /**
+     * Changes the username on the display when the user decides to change their username.
+     * @param name is the new name to be displayed.
+     */
     public void setUsername(String name){
         username = name;
+        setTitle("Chat Agent - " + name);
         userActions.changeUsername(name);
     }
 }

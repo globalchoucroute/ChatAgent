@@ -41,6 +41,12 @@ public class contactList extends JPanel {
 
     //Methods
     //Setters
+
+    /**
+     * Initializes the contact list after the connection process.
+     * @param userList is the list generated during the connection process.
+     * @return a DefaultListModel containing the username of every connected user.
+     */
     private DefaultListModel initContactList(userList userList){
         for (int i = 0; i < userList.getLength(); i++){
             listModel.addElement(userList.getUser(i).getUsername());
@@ -49,7 +55,16 @@ public class contactList extends JPanel {
         return listModel;
     }
 
+    /**
+     * Deletes a contact from the contacts display.
+     * @param userData is the user we want to delete from the list.
+     */
     public void deleteContact(userData userData) { listModel.removeElement(userData.getUsername()); }
+
+    /**
+     * Adds a new contact to the display.
+     * @param userData is the user we want to add to the list.
+     */
     public void addContact(userData userData){
         listModel.addElement(userData.getUsername());
     }

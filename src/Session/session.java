@@ -254,7 +254,7 @@ public class session extends JFrame {
                             message = (message) in.readObject();
                         } catch (ClassNotFoundException e) {e.printStackTrace();}
                         if (message != null) {
-                            if (!temp){
+                            if (!temp && !isServer){
                                 setVisible(true);
                                 temp = true;
                             }

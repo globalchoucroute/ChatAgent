@@ -6,8 +6,8 @@ public class userData implements Serializable {
     private static final long serialVersionUID = 3334L;
 
     public String username;
-    public String macAddress;
-    public String IPAddress;
+    private String macAddress;
+    private String IPAddress;
 
     public userData(String u, String a, String i){
         username = u;
@@ -22,13 +22,9 @@ public class userData implements Serializable {
         return username;
     }
 
-    public void setMacAddress(String a){
-        macAddress=a;
-    }
     public String getMacAddress() {
         return macAddress;
     }
 
-    public void setIPAddress(String i) {IPAddress=i;}
     public String getIPAddress() {return IPAddress;}
 }

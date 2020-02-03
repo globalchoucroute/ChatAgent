@@ -13,6 +13,12 @@ public class systemMessage implements Serializable {
     public userData userData;
     int port;
 
+    /**
+     * Generates a System Message.
+     * @param instruction is the instruction to send, which usually is a keyword like "begin", "disconnect", "change".
+     * @param u is the user data of the user who sends the message.
+     * @param p is only needed when sending a System Message for the beginning of a Chat Session. It's the port on which the other user needs to connect.
+     */
     public systemMessage(String instruction, userData u, int p){
         this.instruction=instruction;
         userData=u;

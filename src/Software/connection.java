@@ -83,6 +83,12 @@ public class connection {
     }
 
     //Methods
+
+    /**
+     * Checks if the chosen username is available.
+     * @param usr is the chosen username.
+     * @return true if the chosen username is available, false if another user has already taken it.
+     */
     public boolean checkUsername(String usr){
         try {
 
@@ -127,6 +133,11 @@ public class connection {
         return control.unique;
     }
 
+    /**
+     * Sends a System Message with our user data (username, mac address, IP address) to every connected user.
+     * @param usr is the chosen username.
+     * @return a list of data from every currently connected user.
+     */
     public userList sendHello(String usr){
         try {
             //Send the message via the systemMessageSender
@@ -180,6 +191,9 @@ public class connection {
         return userList;
     }
 
+    /**
+     * @return our own user data.
+     */
     public userData getPersonalUserData(){
         return new userData(username, macs, ips);
     }
