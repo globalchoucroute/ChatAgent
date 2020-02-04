@@ -389,7 +389,7 @@ public class session extends JFrame {
             String content = ((textMessage) message).content;
             TextPanel textPanel = new TextPanel(content);
             textPanel.setToolTipText(timestamp);
-            wrappingPanel.setPreferredSize(new Dimension(400, textPanel.getHeightRatio() * 15 + 20));
+            wrappingPanel.setPreferredSize(new Dimension(400, textPanel.getHeightRatio() * 15 + 25));
             wrappingPanel.setMaximumSize(new Dimension(400, (int) wrappingPanel.getPreferredSize().getHeight()));
             wrappingPanel.setBorder(titledBorder);
             wrappingPanel.add(textPanel);

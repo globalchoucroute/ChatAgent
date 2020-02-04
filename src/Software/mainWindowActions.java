@@ -130,6 +130,12 @@ public class mainWindowActions {
 
                                     System.out.println("New user added : " + otherUser.getUsername());
                                     break;
+                                case "Available":
+                                    userList.modifyStatus(otherUser.getMacAddress(), "Available");
+                                case "Away":
+                                    userList.modifyStatus(otherUser.getMacAddress(), "Away");
+                                case "Busy":
+                                    userList.modifyStatus(otherUser.getMacAddress(), "Busy");
                                 default:
                                     break;
                             }
@@ -172,7 +178,7 @@ public class mainWindowActions {
             try {
                 //Send the message via the systemMessageSender
                 systemMessageSender systemMessageSender = new systemMessageSender();
-                systemMessageSender.sendSystemMessage(new systemMessage("change", new userData(newName, myself.getMacAddress(), myself.getIPAddress()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+                systemMessageSender.sendSystemMessage(new systemMessage("change", new userData(newName, myself.getMacAddress(), myself.getIPAddress(),myself.getStatus()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
             } catch( Exception e){
                 System.out.println("getLocalhost failed");
             }

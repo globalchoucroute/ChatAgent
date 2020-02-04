@@ -47,7 +47,20 @@ public class contactList extends JPanel {
      */
     private DefaultListModel initContactList(userList userList){
         for (int i = 0; i < userList.getLength(); i++){
-            listModel.addElement(userList.getUser(i).getUsername());
+            String Status = userList.getUser(i).getStatus();
+            String current = userList.getUser(i).getUsername();
+            String s;
+            switch (Status) {
+                case "Available":
+                    current = "[Available] " + current;
+                case "Away":
+                    current = "[Away] " + current;
+                case "Busy":
+                    current = "[Busy] " + current;
+                default:
+                    break;
+            }
+            listModel.addElement(current);
         }
         userList.setGUIcontactList(this);
         return listModel;
@@ -67,4 +80,8 @@ public class contactList extends JPanel {
         listModel.addElement(userData.getUsername());
     }
 
+    public void modifyStatus(userData userData, String status) {
+        int index = listModel.indexOf(userData.getUsername());
+        listModel.set(index, "["+status+"] "+userData.getUsername());
+    }
 }

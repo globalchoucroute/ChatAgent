@@ -82,7 +82,17 @@ public class userList {
         if (user != null) {
             GUIcontactList.deleteContact(user);
             int index = list.indexOf(user);
-            userData updatedUser = new userData(name, mac, user.getIPAddress());
+            userData updatedUser = new userData(name, mac, user.getIPAddress(), user.getStatus());
+            if (index != -1) list.set(index, updatedUser);
+        }
+    }
+
+    public void modifyStatus(String mac, String status){
+        userData user = this.getUserByMac(mac);
+        if (user != null) {
+            GUIcontactList.modifyStatus(user, status);
+            int index = list.indexOf(user);
+            userData updatedUser = new userData(user.getUsername(), mac, user.getIPAddress(), status);
             if (index != -1) list.set(index, updatedUser);
         }
     }

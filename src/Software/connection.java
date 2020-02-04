@@ -94,7 +94,7 @@ public class connection {
 
             //Send the message via the systemMessageSender
             systemMessageSender systemMessageSender = new systemMessageSender();
-            systemMessageSender.sendSystemMessage(new systemMessage("check", new userData(usr, macs, ips), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+            systemMessageSender.sendSystemMessage(new systemMessage("check", new userData(usr, macs, ips, "Available"), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
 
             //Start value for the timer
             long startTime = System.currentTimeMillis();
@@ -142,7 +142,7 @@ public class connection {
         try {
             //Send the message via the systemMessageSender
             systemMessageSender systemMessageSender = new systemMessageSender();
-            systemMessageSender.sendSystemMessage(new systemMessage("hello", new userData(usr, macs, ips), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+            systemMessageSender.sendSystemMessage(new systemMessage("hello", new userData(usr, macs, ips,"Available"), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
 
             //Start value for the timer
             long startTime = System.currentTimeMillis();
@@ -195,7 +195,7 @@ public class connection {
      * @return our own user data.
      */
     public userData getPersonalUserData(){
-        return new userData(username, macs, ips);
+        return new userData(username, macs, ips,"Available");
     }
     public void setControlTrue(){
         control.setTrue();
