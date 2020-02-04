@@ -31,4 +31,5 @@ public class userData implements Serializable {
     public String getIPAddress() {return IPAddress;}
 
     public String getStatus() {return status;}
+    public void setStatus(String newStatus) {status = newStatus;}
 }

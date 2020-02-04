@@ -49,14 +49,16 @@ public class contactList extends JPanel {
         for (int i = 0; i < userList.getLength(); i++){
             String Status = userList.getUser(i).getStatus();
             String current = userList.getUser(i).getUsername();
-            String s;
             switch (Status) {
                 case "Available":
                     current = "[Available] " + current;
+                    break;
                 case "Away":
                     current = "[Away] " + current;
+                    break;
                 case "Busy":
                     current = "[Busy] " + current;
+                    break;
                 default:
                     break;
             }
@@ -77,11 +79,11 @@ public class contactList extends JPanel {
      * @param userData is the user we want to add to the list.
      */
     public void addContact(userData userData){
-        listModel.addElement(userData.getUsername());
+        listModel.addElement("["+userData.getStatus()+"] " + userData.getUsername());
     }
 
     public void modifyStatus(userData userData, String status) {
-        int index = listModel.indexOf(userData.getUsername());
+        int index = listModel.indexOf("["+userData.getStatus()+"] " + userData.getUsername());
         listModel.set(index, "["+status+"] "+userData.getUsername());
     }
 }

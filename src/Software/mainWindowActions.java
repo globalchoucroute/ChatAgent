@@ -132,8 +132,10 @@ public class mainWindowActions {
                                     break;
                                 case "Available":
                                     userList.modifyStatus(otherUser.getMacAddress(), "Available");
+                                    break;
                                 case "Away":
                                     userList.modifyStatus(otherUser.getMacAddress(), "Away");
+                                    break;
                                 case "Busy":
                                     userList.modifyStatus(otherUser.getMacAddress(), "Busy");
                                 default:
@@ -183,5 +185,9 @@ public class mainWindowActions {
                 System.out.println("getLocalhost failed");
             }
         }
+    }
+
+    public void modifyStatus(String status){
+        myself.setStatus(status);
     }
 }

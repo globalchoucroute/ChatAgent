@@ -76,6 +76,7 @@ public class userActions extends JPanel {
             systemMessage systemMessage = new systemMessage(s, myself, 0);
             try {
                 systemMessageSender.sendSystemMessage(systemMessage, InetAddress.getByName("255.255.255.255"), true, 3000);
+                mainWindowActions.modifyStatus(s);
             } catch (IOException er) {
                 er.printStackTrace();
             }
