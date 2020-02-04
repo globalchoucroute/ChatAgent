@@ -30,6 +30,17 @@ public class userList {
         return null;
     }
 
+    public userData getUserByStatus(String status){
+        for (int i = 0; i < this.getLength(); i++) {
+            System.out.println("Checking current username : " + getUser(i).getUsername());
+            String current = "["+getUser(i).getStatus()+"] "+ getUser(i).getUsername();
+            if (current.equals(status)) {
+                System.out.println("User found in the getUserByName : " + getUser(i).getUsername());
+                return getUser(i);
+            }
+        }
+        return null;
+    }
     private userData getUserByMac(String mac){
         for (int i = 0; i < list.size(); i++) {
             if (getUser(i).getMacAddress().equals(mac)) {

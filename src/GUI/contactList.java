@@ -72,7 +72,7 @@ public class contactList extends JPanel {
      * Deletes a contact from the contacts display.
      * @param userData is the user we want to delete from the list.
      */
-    public void deleteContact(userData userData) { listModel.removeElement(userData.getUsername()); }
+    public void deleteContact(userData userData) { listModel.removeElement("["+userData.getStatus()+"] " + userData.getUsername()); }
 
     /**
      * Adds a new contact to the display.
@@ -85,5 +85,10 @@ public class contactList extends JPanel {
     public void modifyStatus(userData userData, String status) {
         int index = listModel.indexOf("["+userData.getStatus()+"] " + userData.getUsername());
         listModel.set(index, "["+status+"] "+userData.getUsername());
+    }
+
+    public void modifyUsername(userData userData, String username) {
+        int index = listModel.indexOf("["+userData.getStatus()+"] " + userData.getUsername());
+        listModel.set(index, "["+userData.getStatus()+"] "+username);
     }
 }

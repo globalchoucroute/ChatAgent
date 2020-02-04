@@ -53,7 +53,7 @@ public class userActions extends JPanel {
             if (L.getSelectedIndex() != -1){
                 try {
                     //Start a new session if a non busy user is selected in the list
-                    userData otherUserData = userList.getUserByName((String) L.getSelectedValue());
+                    userData otherUserData = userList.getUserByStatus((String) L.getSelectedValue());
                     if (otherUserData.getStatus().equals("Busy")){
                         JOptionPane.showMessageDialog(parent, "Sorry, the user you are trying to reach is Busy.");
                     }
