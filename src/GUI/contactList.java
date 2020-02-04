@@ -28,6 +28,7 @@ public class contactList extends JPanel {
         contacts.setVisibleRowCount(4);
 
         JScrollPane container = new JScrollPane(contacts);
+        container.setBackground(Color.gray);
         /*container.setLayout(new BoxLayout(container, BoxLayout.LINE_AXIS));
         container.setBackground(Color.red);
         container.setPreferredSize(new Dimension(100,200));*/
@@ -35,12 +36,9 @@ public class contactList extends JPanel {
         this.add(container);
 
         this.setBackground(Color.gray);
-        this.setPreferredSize(new Dimension(200,200));
+        this.setPreferredSize(new Dimension(100,200));
 
     }
-
-    //Methods
-    //Setters
 
     /**
      * Initializes the contact list after the connection process.

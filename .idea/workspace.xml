@@ -8,37 +8,19 @@
   <component name="ChangeListManager">
     <list default="true" id="76a751c7-8851-40f0-b236-a00c74e795e5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/changeUsernameWindow$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/changeUsernameWindow.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/connectionWindow$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/connectionWindow.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/contactList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/mainWindow$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/mainWindow.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/META-INF/ChatAgent.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/META-INF/ChatAgent.kotlin_module" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Session/session$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Session/session$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Session/session$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Session/session$Connected.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Session/session.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/ChatAgent$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/ChatAgent.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/Message/message.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/ChatAgent_jar/ChatAgent.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/ChatAgent_jar/ChatAgent.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/contactList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/contactList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/mainWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/mainWindow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/GUI/userActions.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/chatMessages.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection$Control.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/mainWindowActions.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/sessionTable.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/systemMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/systemMessageSender.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/userData.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/userList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/connection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/systemMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/systemMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/systemMessageSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/systemMessageSender.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/userData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/userData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ChatAgent/Software/userList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChatAgent/Software/userList.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/contactList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/contactList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Session/session.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Session/session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Software/connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/connection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Software/mainWindowActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/mainWindowActions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Software/sessionTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Software/sessionTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/mainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/mainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/userActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/userActions.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

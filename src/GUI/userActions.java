@@ -5,12 +5,9 @@ import Software.sessionTable;
 import Software.userData;
 import Software.userList;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 
 public class userActions extends JPanel {
 
@@ -22,8 +19,19 @@ public class userActions extends JPanel {
     userActions(JList L, userData myself, mainWindow parent, userList userList, sessionTable sessionTable){
         super();
         username = myself.getUsername();
+        JPanel titlePanel = new JPanel();
+        JPanel restPanel = new JPanel();
+        JPanel labelPanel = new JPanel();
+        Border border = BorderFactory.createLineBorder(Color.black);
         JLabel title = new JLabel("<html><h1 style = 'font-size:140%;font-family:Calibri;'> Welcome to ChatAgent </h1></html>");
+        titlePanel.add(title);
+        titlePanel.setPreferredSize(new Dimension(300, 50));
+        titlePanel.setBorder(border);
+        restPanel.setBorder(border);
+        labelPanel.setBorder(border);
+        labelPanel.setBackground(Color.white);
         userName.setText("Currently logged in as " + username);
+        labelPanel.add(userName);
         mainWindowActions = new mainWindowActions(myself, userList, sessionTable);
 
         //Starts a session with the selected user when the button is clicked
@@ -49,14 +57,20 @@ public class userActions extends JPanel {
 
         //Open the change username window when the button is clicked
         JPanel changeUsernamePane = new JPanel();
+        //changeUsernamePane.setBackground(Color.white);
+        //startSessionPane.setBackground(Color.white);
         JButton changeUsername = new JButton("Change username");
         changeUsernamePane.add(changeUsername);
         changeUsername.addActionListener(e -> new changeUsernameWindow(parent));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(title);
-        add(userName);
-        add(changeUsernamePane);
-        add(startSessionPane);
+        restPanel.add(startSessionPane, BorderLayout.SOUTH);
+        restPanel.add(changeUsernamePane, BorderLayout.NORTH);
+        restPanel.setPreferredSize(new Dimension(300, 130));
+        add(titlePanel);
+        add(labelPanel);
+        add(restPanel);
+        setBackground(Color.white);
+        setPreferredSize(new Dimension(300,200));
     }
 
     void changeUsername(String name){

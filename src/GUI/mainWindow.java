@@ -7,12 +7,9 @@ import Software.systemMessageSender;
 import Software.userData;
 import Software.userList;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -29,16 +26,19 @@ public class mainWindow extends JFrame {
     //Constructor
     mainWindow(userData myself, userList usersList, sessionTable sessionTable){
         super("Chat Agent - " + myself.getUsername());
+        setBackground(Color.yellow);
         username = myself.getUsername();
         GUI.contactList contactList = new contactList(usersList);
         this.userActions = new userActions(contactList.contacts, myself, this, usersList, sessionTable);
         userActions.setAlignmentX(Component.LEFT_ALIGNMENT);
         ImageIcon icon = new ImageIcon("images/icon.png");
         setIconImage(icon.getImage());
-
+        //setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
         add(contactList, BorderLayout.WEST);
-        add(userActions, BorderLayout.EAST);
+        add(userActions, BorderLayout.CENTER);
         setPreferredSize(new Dimension(400,200));
+        setMinimumSize(new Dimension(350, 200));
+        setMaximumSize(new Dimension(500, 350));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -74,12 +74,6 @@ public class mainWindow extends JFrame {
         pack();
         setVisible(true);
     }
-
-
-    //Methods
-    //Getters
-
-    //Setters
 
     /**
      * Changes the username on the display when the user decides to change their username.
