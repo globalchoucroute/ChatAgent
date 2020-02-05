@@ -117,6 +117,7 @@ public class mainWindowActions {
                                 case "change":
                                     userList.modifyUsername(otherUser.getMacAddress(), theirUsername);
                                     sessionTable.updateSessionOtherUserdata(otherUser);
+                                    break;
                                 case "hello":
                                     System.out.println("Received sendHello message... Adding new user with username " + theirUsername);
                                     systemMessageSender systemMessageSender = new systemMessageSender();
@@ -181,6 +182,7 @@ public class mainWindowActions {
                 //Send the message via the systemMessageSender
                 systemMessageSender systemMessageSender = new systemMessageSender();
                 systemMessageSender.sendSystemMessage(new systemMessage("change", new userData(newName, myself.getMacAddress(), myself.getIPAddress(),myself.getStatus()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+                myself.setUsername(newName);
             } catch( Exception e){
                 System.out.println("getLocalhost failed");
             }

@@ -93,6 +93,7 @@ public class userList {
         if (user != null) {
             GUIcontactList.deleteContact(user);
             int index = list.indexOf(user);
+            //list.remove(user);
             userData updatedUser = new userData(name, mac, user.getIPAddress(), user.getStatus());
             if (index != -1) list.set(index, updatedUser);
         }
