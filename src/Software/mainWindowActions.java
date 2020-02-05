@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import Session.session;
+import java.net.*;
 
 
 public class mainWindowActions {
@@ -182,14 +183,34 @@ public class mainWindowActions {
                 //Send the message via the systemMessageSender
                 systemMessageSender systemMessageSender = new systemMessageSender();
                 systemMessageSender.sendSystemMessage(new systemMessage("change", new userData(newName, myself.getMacAddress(), myself.getIPAddress(),myself.getStatus()), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+                URL url = new URL("https://srv-gei-tomcat.insa-toulouse.fr/DeloffreGarnier?username="+newName+"&status="+myself.getStatus()+"&mac="+myself.getMacAddress());
+                URLConnection con = url.openConnection();
+                HttpURLConnection http = (HttpURLConnection)con;
+                http.setRequestMethod("PUT");
+                http.setDoOutput(true);
+                http.connect();
+                System.out.println("put request sent");
                 myself.setUsername(newName);
+
             } catch( Exception e){
                 System.out.println("getLocalhost failed");
             }
         }
     }
 
-    public void modifyStatus(String status){
+    public void modifyStatus(String status) {
         myself.setStatus(status);
+        try {
+
+            URL url = new URL("https://srv-gei-tomcat.insa-toulouse.fr/DeloffreGarnier?username=" + myself.getUsername() + "&status=" + status + "&mac=" + myself.getMacAddress());
+            URLConnection con = url.openConnection();
+            HttpURLConnection http = (HttpURLConnection) con;
+            http.setRequestMethod("PUT");
+            http.setDoOutput(true);
+            http.connect();
+            System.out.println("put request sent");
+        } catch (Exception e){
+            System.out.println("update status failed");
+        }
     }
 }

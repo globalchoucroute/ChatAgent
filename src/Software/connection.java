@@ -5,13 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.channels.SocketChannel;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -140,7 +134,17 @@ public class connection {
             systemMessageSender systemMessageSender = new systemMessageSender();
             systemMessageSender.sendSystemMessage(new systemMessage("hello", new userData(usr, macs, ips,"Available"), 0), InetAddress.getByName("255.255.255.255"), true, 3000);
 
-
+            try {
+                URL url = new URL("https://srv-gei-tomcat.insa-toulouse.fr/DeloffreGarnier?username=" + usr + "&status=" + "Available" + "&mac=" + macs+"&ip="+ips);
+                URLConnection con = url.openConnection();
+                HttpURLConnection http = (HttpURLConnection) con;
+                http.setRequestMethod("POST");
+                http.setDoOutput(true);
+                http.connect();
+                System.out.println("post request sent");
+            } catch (Exception e){
+                System.out.println("update status failed");
+            }
             Thread userNameReceptionThread = new Thread(() -> {
                 try{
                     DatagramSocket serverSocket = new DatagramSocket(2002);

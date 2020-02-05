@@ -13,8 +13,8 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
+
 import GUI.userActions;
 
 public class mainWindow extends JFrame {
@@ -58,10 +58,20 @@ public class mainWindow extends JFrame {
                                 session currentSession = sessionTable.element(i);
                                 String ip = currentSession.getOtherUserData().getIPAddress();
                                 systemMessageSender.sendSystemMessage(new systemMessage("disconnect", myself, 0), InetAddress.getByName(ip), false, 3000);
+
                                 currentSession.closeSession();
                             }
                         }
                         systemMessageSender.sendSystemMessage(new systemMessage("bye", myself, 0), InetAddress.getByName("255.255.255.255"), true, 3000);
+                        try {
+                            URL url = new URL("https://srv-gei-tomcat.insa-toulouse.fr/DeloffreGarnier?mac=" + myself.getMacAddress());
+                            URLConnection con = url.openConnection();
+                            HttpURLConnection http = (HttpURLConnection) con;
+                            http.setRequestMethod("DELETE");
+                            http.setDoOutput(true);
+                            http.connect();
+                            System.out.println("delete request sent");
+                        } catch(Exception e2){ System.out.println("problem while deleting user from servlet");}
                     } catch (UnknownHostException uhe) {
                         uhe.printStackTrace();
                     }
