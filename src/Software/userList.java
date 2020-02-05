@@ -91,9 +91,8 @@ public class userList {
     public void modifyUsername(String mac, String name) {
         userData user = this.getUserByMac(mac);
         if (user != null) {
-            GUIcontactList.deleteContact(user);
+            GUIcontactList.modifyUsername(user, name);
             int index = list.indexOf(user);
-            //list.remove(user);
             userData updatedUser = new userData(name, mac, user.getIPAddress(), user.getStatus());
             if (index != -1) list.set(index, updatedUser);
         }
